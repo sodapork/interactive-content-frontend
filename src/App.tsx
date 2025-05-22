@@ -17,6 +17,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string>('');
   const [updating, setUpdating] = useState<boolean>(false);
+  const [showOtherIdeas, setShowOtherIdeas] = useState<boolean>(false);
 
   const handleContentSubmit = async (input: string, type: ContentType) => {
     setContent(input);
@@ -27,6 +28,7 @@ function App() {
     setFeedback('');
     setToolIdeas([]);
     setSelectedIdea(null);
+    setShowOtherIdeas(false);
     let blogContent = input;
     try {
       if (type === 'url') {
@@ -54,6 +56,7 @@ function App() {
     setError(null);
     setGeneratedTool('');
     setFeedback('');
+    setShowOtherIdeas(false);
     try {
       const tool = await processContentForIdea(content, idea);
       setGeneratedTool(tool);
@@ -78,6 +81,12 @@ function App() {
       setUpdating(false);
     }
   };
+
+  const handleTryDifferentIdea = () => {
+    setShowOtherIdeas(true);
+  };
+
+  const otherIdeas = toolIdeas.filter(idea => idea !== selectedIdea);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -114,6 +123,33 @@ function App() {
             )}
             {generatedTool && <>
               <ToolPreview tool={generatedTool} />
+              <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                <button
+                  className="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={handleTryDifferentIdea}
+                  disabled={loading || otherIdeas.length === 0}
+                >
+                  Try a different idea
+                </button>
+              </div>
+              {showOtherIdeas && otherIdeas.length > 0 && (
+                <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
+                  <h4 className="text-md font-semibold mb-2">Choose Another Idea</h4>
+                  <ul className="space-y-2">
+                    {otherIdeas.map((idea, idx) => (
+                      <li key={idx}>
+                        <button
+                          className="w-full text-left px-4 py-2 rounded-md border border-blue-200 hover:bg-blue-50 focus:bg-blue-100 focus:outline-none"
+                          onClick={() => handleIdeaSelect(idea)}
+                          disabled={loading}
+                        >
+                          {idea}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
                 <h4 className="text-md font-semibold mb-2">Request a Change or Edit</h4>
                 <textarea
