@@ -5,6 +5,8 @@ import { ContentType } from './types';
 import { generateToolIdeas, processContentForIdea, updateToolWithFeedback } from './services/contentProcessor';
 import axios from 'axios';
 
+const BACKEND_URL = 'https://interactive-content-backend.onrender.com';
+
 function App() {
   const [content, setContent] = useState<string>('');
   const [contentType, setContentType] = useState<ContentType>('text');
@@ -29,7 +31,7 @@ function App() {
     try {
       if (type === 'url') {
         // Call backend to extract content from URL
-        const response = await axios.post('http://localhost:5001/extract', { url: input });
+        const response = await axios.post(`${BACKEND_URL}/extract`, { url: input });
         if (response.data && response.data.content) {
           blogContent = response.data.content;
         } else {
