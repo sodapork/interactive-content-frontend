@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ContentInput from './components/ContentInput';
 import ToolPreview from './components/ToolPreview';
+import LoadingSpinner from './components/LoadingSpinner';
 import { ContentType } from './types';
 import { generateToolIdeas, processContentForIdea, updateToolWithFeedback } from './services/contentProcessor';
 import axios from 'axios';
@@ -101,7 +102,7 @@ function App() {
         <div className="px-4 py-6 sm:px-0">
           <div className="grid grid-cols-1 gap-6">
             <ContentInput onSubmit={handleContentSubmit} />
-            {loading && <div className="text-blue-600">{selectedIdea ? 'Generating tool...' : 'Generating ideas...'}</div>}
+            {loading && <LoadingSpinner />}
             {error && <div className="text-red-600">{error}</div>}
             {!loading && toolIdeas.length > 0 && !generatedTool && (
               <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
