@@ -19,6 +19,7 @@ function App() {
   const [feedback, setFeedback] = useState<string>('');
   const [updating, setUpdating] = useState<boolean>(false);
   const [showOtherIdeas, setShowOtherIdeas] = useState<boolean>(false);
+  const [styleSummary, setStyleSummary] = useState<string>('');
 
   const handleContentSubmit = async (input: string, type: ContentType) => {
     setContent(input);
@@ -30,18 +31,22 @@ function App() {
     setToolIdeas([]);
     setSelectedIdea(null);
     setShowOtherIdeas(false);
+    setStyleSummary('');
     let blogContent = input;
+    let styleSummaryValue = '';
     try {
       if (type === 'url') {
         // Call backend to extract content from URL
         const response = await axios.post(`${BACKEND_URL}/extract`, { url: input });
         if (response.data && response.data.content) {
           blogContent = response.data.content;
+          styleSummaryValue = response.data.styleSummary || '';
+          setStyleSummary(styleSummaryValue);
         } else {
           throw new Error('Failed to extract content from URL.');
         }
       }
-      const ideas = await generateToolIdeas(blogContent);
+      const ideas = await generateToolIdeas(blogContent, styleSummaryValue || styleSummary);
       setToolIdeas(ideas);
       setContent(blogContent); // Store extracted content for later use
     } catch (err: any) {
@@ -59,7 +64,7 @@ function App() {
     setFeedback('');
     setShowOtherIdeas(false);
     try {
-      const tool = await processContentForIdea(content, idea);
+      const tool = await processContentForIdea(content, idea, styleSummary);
       setGeneratedTool(tool);
     } catch (err: any) {
       setError('Failed to generate tool. Please try again.');
