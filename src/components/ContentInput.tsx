@@ -1,77 +1,57 @@
 import React, { useState } from 'react';
-import { ContentInputProps, ContentType } from '../types';
+import { ContentType } from '../types';
+
+interface ContentInputProps {
+  onSubmit: (input: string, type: ContentType) => void;
+}
 
 const ContentInput: React.FC<ContentInputProps> = ({ onSubmit }) => {
-  const [content, setContent] = useState('');
+  const [input, setInput] = useState('');
   const [type, setType] = useState<ContentType>('text');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(content, type);
+    if (input.trim()) {
+      onSubmit(input, type);
+    }
   };
 
   return (
-    <div className="bg-white shadow sm:rounded-lg">
-      <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg font-medium leading-6 text-gray-900">
-          Input Your Content
-        </h3>
-        <div className="mt-2 max-w-xl text-sm text-gray-500">
-          <p>Enter your blog post content or URL to generate an interactive tool.</p>
+    <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md p-8 flex flex-col gap-6 mt-[-60px] relative z-10">
+      <div className="flex items-center justify-center gap-4 mb-2">
+        <div className="flex bg-gray-100 rounded-full p-1 shadow-inner">
+          <button
+            type="button"
+            className={`px-6 py-2 rounded-full text-sm font-semibold transition-colors duration-200 ${type === 'text' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 hover:bg-gray-200'}`}
+            onClick={() => setType('text')}
+          >
+            Text Input
+          </button>
+          <button
+            type="button"
+            className={`px-6 py-2 rounded-full text-sm font-semibold transition-colors duration-200 ${type === 'url' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 hover:bg-gray-200'}`}
+            onClick={() => setType('url')}
+          >
+            URL Input
+          </button>
         </div>
-        <form onSubmit={handleSubmit} className="mt-5">
-          <div className="flex space-x-4 mb-4">
-            <button
-              type="button"
-              onClick={() => setType('text')}
-              className={`px-4 py-2 rounded-md ${
-                type === 'text'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
-            >
-              Text Input
-            </button>
-            <button
-              type="button"
-              onClick={() => setType('url')}
-              className={`px-4 py-2 rounded-md ${
-                type === 'url'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
-            >
-              URL Input
-            </button>
-          </div>
-          {type === 'text' ? (
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows={6}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              placeholder="Paste your blog post content here..."
-            />
-          ) : (
-            <input
-              type="url"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              placeholder="Enter the URL of your blog post..."
-            />
-          )}
-          <div className="mt-5">
-            <button
-              type="submit"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Generate Tool
-            </button>
-          </div>
-        </form>
       </div>
-    </div>
+      <div className="flex flex-col gap-2">
+        <input
+          type="text"
+          className="w-full px-6 py-4 rounded-lg border border-gray-200 shadow focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-lg transition-all placeholder-gray-400 bg-gray-50"
+          placeholder={type === 'url' ? 'Paste your blog post URL here...' : 'Paste or write your blog post content here...'}
+          value={input}
+          onChange={e => setInput(e.target.value)}
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full py-3 mt-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold shadow-lg transition-all"
+      >
+        Generate Tool
+      </button>
+    </form>
   );
 };
 
