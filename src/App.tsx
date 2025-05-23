@@ -207,102 +207,48 @@ function App() {
                   </ul>
                 </div>
               )}
-              {generatedTool && <>
+              {generatedTool && !publishedUrl && (
                 <ToolPreview tool={generatedTool} />
-                <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                  <button
-                    className="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    onClick={handleTryDifferentIdea}
-                    disabled={loading || otherIdeas.length === 0}
-                  >
-                    Try a different idea
-                  </button>
-                  <button
-                    className="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md shadow-sm text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    onClick={handlePublish}
-                    disabled={publishing}
-                  >
-                    {publishing ? 'Publishing...' : 'Publish & Get Embed Code'}
-                  </button>
-                </div>
-                {showOtherIdeas && otherIdeas.length > 0 && (
-                  <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
-                    <h4 className="text-md font-semibold mb-2">Choose Another Idea</h4>
-                    <ul className="space-y-2">
-                      {otherIdeas.map((idea, idx) => (
-                        <li key={idx}>
-                          <button
-                            className="w-full text-left px-4 py-2 rounded-md border border-blue-200 hover:bg-blue-50 focus:bg-blue-100 focus:outline-none"
-                            onClick={() => handleIdeaSelect(idea)}
-                            disabled={loading}
-                          >
-                            {idea}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+              )}
+              {generatedTool && publishedUrl && (
+                <div>
+                  <ToolPreview tool={generatedTool} />
+                  <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                    <button
+                      className="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md shadow-sm text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`<iframe src=\"${publishedUrl}\" width=\"100%\" height=\"700\" style=\"border:none;overflow:auto;\"></iframe>`);
+                      }}
+                    >
+                      Copy Embed Code
+                    </button>
+                    <button
+                      className="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      onClick={() => {
+                        navigator.clipboard.writeText(generatedTool);
+                      }}
+                    >
+                      Copy Full Tool Code
+                    </button>
                   </div>
-                )}
-                <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
-                  <h4 className="text-md font-semibold mb-2">Request a Change or Edit</h4>
-                  <textarea
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
-                    rows={3}
-                    placeholder="Describe what you want to change or add (e.g., 'Add a pie chart', 'Change color to green')"
-                    value={feedback}
-                    onChange={e => setFeedback(e.target.value)}
-                    disabled={updating}
-                  />
-                  <button
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-                    onClick={handleUpdateTool}
-                    disabled={updating || !feedback.trim()}
-                  >
-                    {updating ? 'Updating...' : 'Update Tool'}
-                  </button>
-                </div>
-                {publishedUrl && (
-                  <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
-                    <h4 className="text-md font-semibold mb-2">Embed This Tool Anywhere</h4>
-                    <div className="bg-yellow-100 text-yellow-800 p-4 rounded mb-4">
-                      <strong>Your tool is being published to GitHub Pages.</strong>
-                      <div>It may take 1–2 minutes before the embed link is live.</div>
-                      <div className="mt-2">
-                        <button
-                          onClick={checkIfLive}
-                          disabled={checking}
-                          className="inline-flex items-center px-3 py-1.5 border border-blue-600 text-xs font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                          {checking ? 'Checking...' : 'Check if tool is live'}
-                        </button>
-                      </div>
-                    </div>
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700">Embed Code</label>
                     <textarea
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
                       rows={2}
                       readOnly
                       value={`<iframe src=\"${publishedUrl}\" width=\"100%\" height=\"700\" style=\"border:none;overflow:auto;\"></iframe>`}
-                      disabled={!toolIsLive}
                     />
-                    <h4 className="text-md font-semibold mb-2 mt-4">Live Published Preview</h4>
-                    <div style={{ minHeight: 50 }}>
-                      {toolIsLive ? (
-                        <iframe
-                          src={publishedUrl}
-                          width="100%"
-                          height="700"
-                          style={{ border: 'none', overflow: 'auto' }}
-                          title="Published Tool Preview"
-                        />
-                      ) : (
-                        <div className="text-red-600 mt-2">
-                          The tool is not live yet. Please wait a minute and try again.
-                        </div>
-                      )}
-                    </div>
+                    <label className="block text-sm font-medium text-gray-700 mt-2">Full Tool Code</label>
+                    <textarea
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
+                      rows={4}
+                      readOnly
+                      value={generatedTool}
+                    />
                   </div>
-                )}
-              </>}
+                </div>
+              )}
             </div>
           )}
           {tab === 'recent' && (
