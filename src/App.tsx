@@ -22,6 +22,9 @@ function App() {
   const [styleSummary, setStyleSummary] = useState<string>('');
   const [publishedUrl, setPublishedUrl] = useState<string>('');
   const [publishing, setPublishing] = useState<boolean>(false);
+  const [toolIsLive, setToolIsLive] = useState<boolean>(false);
+  const [checking, setChecking] = useState<boolean>(false);
+  const [publishTime, setPublishTime] = useState<number | null>(null);
 
   const handleContentSubmit = async (input: string, type: ContentType) => {
     setContent(input);
@@ -98,8 +101,9 @@ function App() {
     if (!generatedTool) return;
     setPublishing(true);
     setPublishedUrl('');
+    setToolIsLive(false);
+    setPublishTime(Date.now());
     try {
-      // Use a simple filename based on selected idea or timestamp
       const filename = (selectedIdea ? selectedIdea.replace(/[^a-z0-9]/gi, '-').toLowerCase() : 'tool') + '-' + Date.now() + '.html';
       const response = await axios.post(`${BACKEND_URL}/publish`, {
         filename,
@@ -111,6 +115,18 @@ function App() {
     } finally {
       setPublishing(false);
     }
+  };
+
+  const checkIfLive = async () => {
+    if (!publishedUrl) return;
+    setChecking(true);
+    try {
+      const res = await fetch(publishedUrl, { method: 'HEAD' });
+      setToolIsLive(res.ok);
+    } catch {
+      setToolIsLive(false);
+    }
+    setChecking(false);
   };
 
   const otherIdeas = toolIdeas.filter(idea => idea !== selectedIdea);
@@ -205,20 +221,42 @@ function App() {
               {publishedUrl && (
                 <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
                   <h4 className="text-md font-semibold mb-2">Embed This Tool Anywhere</h4>
+                  <div className="bg-yellow-100 text-yellow-800 p-4 rounded mb-4">
+                    <strong>Your tool is being published to GitHub Pages.</strong>
+                    <div>It may take 1–2 minutes before the embed link is live.</div>
+                    <div className="mt-2">
+                      <button
+                        onClick={checkIfLive}
+                        disabled={checking}
+                        className="inline-flex items-center px-3 py-1.5 border border-blue-600 text-xs font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      >
+                        {checking ? 'Checking...' : 'Check if tool is live'}
+                      </button>
+                    </div>
+                  </div>
                   <textarea
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
                     rows={2}
                     readOnly
                     value={`<iframe src=\"${publishedUrl}\" width=\"100%\" height=\"700\" style=\"border:none;overflow:auto;\"></iframe>`}
+                    disabled={!toolIsLive}
                   />
                   <h4 className="text-md font-semibold mb-2 mt-4">Live Published Preview</h4>
-                  <iframe
-                    src={publishedUrl}
-                    width="100%"
-                    height="700"
-                    style={{ border: 'none', overflow: 'auto' }}
-                    title="Published Tool Preview"
-                  />
+                  <div style={{ minHeight: 50 }}>
+                    {toolIsLive ? (
+                      <iframe
+                        src={publishedUrl}
+                        width="100%"
+                        height="700"
+                        style={{ border: 'none', overflow: 'auto' }}
+                        title="Published Tool Preview"
+                      />
+                    ) : (
+                      <div className="text-red-600 mt-2">
+                        The tool is not live yet. Please wait a minute and try again.
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </>}
