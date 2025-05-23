@@ -56,13 +56,20 @@ function App() {
       if (type === 'url') {
         // Call backend to extract content from URL
         const response = await axios.post(`${BACKEND_URL}/extract`, { url: input });
-        if (response.data && response.data.content) {
+        if (response.data && response.data.content && response.data.content.trim()) {
           blogContent = response.data.content;
           styleSummaryValue = response.data.styleSummary || '';
           setStyleSummary(styleSummaryValue);
         } else {
-          throw new Error('Failed to extract content from URL.');
+          setLoading(false);
+          setError('Failed to extract content from URL. Please try a different link or paste the content manually.');
+          return;
         }
+      }
+      if (!blogContent || !blogContent.trim()) {
+        setLoading(false);
+        setError('No content to generate ideas from.');
+        return;
       }
       // Log the content being sent to /ideas
       console.log('Sending to /ideas:', blogContent.slice(0, 300));
