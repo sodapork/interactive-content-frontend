@@ -56,7 +56,7 @@ const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
           Generated Tool Preview
         </h3>
         <div className="mt-2 max-w-xl text-sm text-gray-500">
-          <p>Here's your generated interactive tool. You can copy the embed code below.</p>
+          <p>Here's your generated interactive tool.</p>
         </div>
         <div className="mt-5">
           <div className="bg-gray-50 p-4 rounded-md">
@@ -65,33 +65,6 @@ const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
               title="Tool Preview"
               style={{ width: '100%', height: 400, border: '1px solid #ccc', background: '#fff' }}
             />
-          </div>
-          <div className="mt-4">
-            <label
-              htmlFor="embed-code"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Embed Code
-            </label>
-            <div className="mt-1">
-              <textarea
-                id="embed-code"
-                name="embed-code"
-                rows={4}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                value={`<script>${tool}</script>`}
-                readOnly
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                navigator.clipboard.writeText(`<script>${tool}</script>`);
-              }}
-              className="mt-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Copy to Clipboard
-            </button>
           </div>
         </div>
       </div>
