@@ -1,9 +1,26 @@
 import React, { useRef, useEffect } from 'react';
 import { ToolPreviewProps } from '../types';
 
-function cleanToolCode(tool: string) {
-  // Remove triple backticks and any language label
-  return tool.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '').trim();
+function parseToolCode(tool: string) {
+  // Remove markdown code fences and comments
+  let code = tool.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '');
+  code = code.replace(/\\/g, ''); // Remove escape slashes if any
+  code = code.replace(/\/\*[\s\S]*?\*\//g, ''); // Remove /* ... */ comments (multiline safe)
+  code = code.replace(/\/\/.*$/gm, ''); // Remove // ... comments
+
+  // Extract <style>...</style>
+  const styleMatch = code.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+  const style = styleMatch ? styleMatch[0] : '';
+
+  // Extract <script>...</script>
+  const scriptMatch = code.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+  const script = scriptMatch ? scriptMatch[0] : '';
+
+  // Remove style and script from HTML
+  let html = code.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+  html = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+
+  return { html, style, script };
 }
 
 const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
@@ -13,14 +30,17 @@ const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
     if (iframeRef.current) {
       const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
       if (doc) {
+        const { html, style, script } = parseToolCode(tool);
         doc.open();
         doc.write(`
           <html>
             <head>
               <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+              ${style}
             </head>
             <body>
-              ${cleanToolCode(tool)}
+              ${html}
+              ${script}
             </body>
           </html>
         `);
@@ -59,14 +79,14 @@ const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
                 name="embed-code"
                 rows={4}
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                value={`<script>${cleanToolCode(tool)}</script>`}
+                value={`<script>${tool}</script>`}
                 readOnly
               />
             </div>
             <button
               type="button"
               onClick={() => {
-                navigator.clipboard.writeText(`<script>${cleanToolCode(tool)}</script>`);
+                navigator.clipboard.writeText(`<script>${tool}</script>`);
               }}
               className="mt-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
