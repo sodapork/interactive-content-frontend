@@ -8,6 +8,19 @@ import axios from 'axios';
 
 const BACKEND_URL = 'https://interactive-content-backend.onrender.com';
 
+function Notification({ message, type, onClose }: { message: string, type: 'success' | 'error', onClose: () => void }) {
+  if (!message) return null;
+  return (
+    <div className={`fixed top-6 right-6 z-50 px-6 py-4 rounded shadow-lg text-white ${type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}
+         style={{ minWidth: 250 }}>
+      <div className="flex items-center justify-between">
+        <span>{message}</span>
+        <button onClick={onClose} className="ml-4 text-white font-bold">×</button>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [content, setContent] = useState<string>('');
   const [contentType, setContentType] = useState<ContentType>('text');
@@ -28,6 +41,7 @@ function App() {
   const [tab, setTab] = useState<'generate' | 'recent'>('generate');
   const [recentTools, setRecentTools] = useState<{ name: string; url: string }[]>([]);
   const [loadingRecent, setLoadingRecent] = useState<boolean>(false);
+  const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
     if (tab === 'recent') {
@@ -132,7 +146,9 @@ function App() {
         html: generatedTool
       });
       setPublishedUrl(response.data.url);
+      setNotification({ message: 'Tool published! Your embed code is ready.', type: 'success' });
     } catch (err) {
+      setNotification({ message: 'Failed to publish tool.', type: 'error' });
       alert('Failed to publish tool.');
     } finally {
       setPublishing(false);
@@ -161,6 +177,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <Notification
+        message={notification?.message || ''}
+        type={notification?.type || 'success'}
+        onClose={() => setNotification(null)}
+      />
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">
@@ -182,6 +203,10 @@ function App() {
           </div>
         </div>
       </header>
+      <section className="bg-gradient-to-br from-blue-600 to-blue-400 py-20 text-center text-white">
+        <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg">Give your content the sauce</h1>
+        <p className="text-2xl font-medium max-w-2xl mx-auto drop-shadow">Automatically create interactive tools based on your blog content.</p>
+      </section>
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {tab === 'generate' && (
