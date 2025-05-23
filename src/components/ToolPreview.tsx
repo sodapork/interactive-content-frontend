@@ -11,10 +11,19 @@ const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
 
   useEffect(() => {
     if (iframeRef.current) {
-      const doc = iframeRef.current.contentDocument;
+      const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
       if (doc) {
         doc.open();
-        doc.write(cleanToolCode(tool));
+        doc.write(`
+          <html>
+            <head>
+              <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+            </head>
+            <body>
+              ${cleanToolCode(tool)}
+            </body>
+          </html>
+        `);
         doc.close();
       }
     }
@@ -34,7 +43,7 @@ const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
             <iframe
               ref={iframeRef}
               title="Tool Preview"
-              style={{ width: '100%', height: '300px', border: '1px solid #ccc', background: 'white' }}
+              style={{ width: '100%', height: 400, border: '1px solid #ccc', background: '#fff' }}
             />
           </div>
           <div className="mt-4">
