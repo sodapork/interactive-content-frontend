@@ -64,6 +64,8 @@ function App() {
           throw new Error('Failed to extract content from URL.');
         }
       }
+      // Log the content being sent to /ideas
+      console.log('Sending to /ideas:', blogContent.slice(0, 300));
       const ideas = await generateToolIdeas(blogContent, styleSummaryValue || styleSummary);
       setToolIdeas(ideas);
       setContent(blogContent); // Store extracted content for later use
