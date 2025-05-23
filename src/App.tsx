@@ -20,6 +20,8 @@ function App() {
   const [updating, setUpdating] = useState<boolean>(false);
   const [showOtherIdeas, setShowOtherIdeas] = useState<boolean>(false);
   const [styleSummary, setStyleSummary] = useState<string>('');
+  const [publishedUrl, setPublishedUrl] = useState<string>('');
+  const [publishing, setPublishing] = useState<boolean>(false);
 
   const handleContentSubmit = async (input: string, type: ContentType) => {
     setContent(input);
@@ -92,6 +94,25 @@ function App() {
     setShowOtherIdeas(true);
   };
 
+  const handlePublish = async () => {
+    if (!generatedTool) return;
+    setPublishing(true);
+    setPublishedUrl('');
+    try {
+      // Use a simple filename based on selected idea or timestamp
+      const filename = (selectedIdea ? selectedIdea.replace(/[^a-z0-9]/gi, '-').toLowerCase() : 'tool') + '-' + Date.now() + '.html';
+      const response = await axios.post(`${BACKEND_URL}/publish`, {
+        filename,
+        html: generatedTool
+      });
+      setPublishedUrl(response.data.url);
+    } catch (err) {
+      alert('Failed to publish tool.');
+    } finally {
+      setPublishing(false);
+    }
+  };
+
   const otherIdeas = toolIdeas.filter(idea => idea !== selectedIdea);
 
   return (
@@ -137,6 +158,13 @@ function App() {
                 >
                   Try a different idea
                 </button>
+                <button
+                  className="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md shadow-sm text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  onClick={handlePublish}
+                  disabled={publishing}
+                >
+                  {publishing ? 'Publishing...' : 'Publish & Get Embed Code'}
+                </button>
               </div>
               {showOtherIdeas && otherIdeas.length > 0 && (
                 <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
@@ -174,6 +202,25 @@ function App() {
                   {updating ? 'Updating...' : 'Update Tool'}
                 </button>
               </div>
+              {publishedUrl && (
+                <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
+                  <h4 className="text-md font-semibold mb-2">Embed This Tool Anywhere</h4>
+                  <textarea
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
+                    rows={2}
+                    readOnly
+                    value={`<iframe src=\"${publishedUrl}\" width=\"100%\" height=\"700\" style=\"border:none;overflow:auto;\"></iframe>`}
+                  />
+                  <h4 className="text-md font-semibold mb-2 mt-4">Live Published Preview</h4>
+                  <iframe
+                    src={publishedUrl}
+                    width="100%"
+                    height="700"
+                    style={{ border: 'none', overflow: 'auto' }}
+                    title="Published Tool Preview"
+                  />
+                </div>
+              )}
             </>}
           </div>
         </div>
