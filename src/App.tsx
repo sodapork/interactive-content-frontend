@@ -144,6 +144,12 @@ function App() {
 
   const otherIdeas = toolIdeas.filter(idea => idea !== selectedIdea);
 
+  // Helper to copy embed code
+  const handleCopyEmbed = (url: string) => {
+    const snippet = `<iframe src="${url}" width="100%" height="300" style="border:none;overflow:auto;"></iframe>`;
+    navigator.clipboard.writeText(snippet);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow">
@@ -306,7 +312,12 @@ function App() {
                         style={{ border: 'none', overflow: 'auto' }}
                         title={tool.name}
                       />
-                      <div className="mt-2 text-xs text-gray-500 break-all">{tool.name}</div>
+                      <button
+                        className="mt-2 px-3 py-1.5 border border-blue-600 text-xs font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        onClick={() => handleCopyEmbed(tool.url)}
+                      >
+                        Copy Embed
+                      </button>
                       <a
                         href={tool.url}
                         target="_blank"
