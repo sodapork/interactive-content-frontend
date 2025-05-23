@@ -21,6 +21,23 @@ function Notification({ message, type, onClose }: { message: string, type: 'succ
   );
 }
 
+function LoadingBar() {
+  return (
+    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden my-6">
+      <div className="h-full bg-blue-500 animate-loading-bar" style={{ width: '100%' }} />
+      <style>{`
+        @keyframes loading-bar {
+          0% { width: 0; }
+          100% { width: 100%; }
+        }
+        .animate-loading-bar {
+          animation: loading-bar 1.2s linear infinite alternate;
+        }
+      `}</style>
+    </div>
+  );
+}
+
 function App() {
   const [content, setContent] = useState<string>('');
   const [contentType, setContentType] = useState<ContentType>('text');
@@ -212,16 +229,16 @@ function App() {
           {tab === 'generate' && (
             <div className="grid grid-cols-1 gap-6">
               <ContentInput onSubmit={handleContentSubmit} />
-              {loading && <LoadingSpinner />}
+              {loading && <LoadingBar />}
               {error && <div className="text-red-600">{error}</div>}
-              {!loading && toolIdeas.length > 0 && !generatedTool && (
+              {toolIdeas.length > 0 && (
                 <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
                   <h4 className="text-md font-semibold mb-2">Choose an Interactive Tool Idea</h4>
                   <ul className="space-y-2">
                     {toolIdeas.map((idea, idx) => (
                       <li key={idx}>
                         <button
-                          className="w-full text-left px-4 py-2 rounded-md border border-blue-200 hover:bg-blue-50 focus:bg-blue-100 focus:outline-none"
+                          className={`w-full text-left px-4 py-2 rounded-md border border-blue-200 transition-colors duration-150 focus:outline-none ${selectedIdea === idea ? 'bg-blue-100 border-blue-500 font-bold text-blue-800' : 'hover:bg-blue-50'}`}
                           onClick={() => handleIdeaSelect(idea)}
                           disabled={loading}
                         >
@@ -242,6 +259,13 @@ function App() {
                       disabled={publishing}
                     >
                       {publishing ? 'Publishing...' : 'Publish & Get Embed Code'}
+                    </button>
+                    <button
+                      className="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      onClick={handleTryDifferentIdea}
+                      disabled={loading || toolIdeas.length === 0}
+                    >
+                      Try Another Idea
                     </button>
                   </div>
                   <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
