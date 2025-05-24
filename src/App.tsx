@@ -59,6 +59,7 @@ function App() {
   const [recentTools, setRecentTools] = useState<{ name: string; url: string }[]>([]);
   const [loadingRecent, setLoadingRecent] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
+  const [updateMessage, setUpdateMessage] = useState<string>('');
 
   useEffect(() => {
     if (tab === 'recent') {
@@ -135,10 +136,12 @@ function App() {
     if (!feedback.trim()) return;
     setUpdating(true);
     setError(null);
+    setUpdateMessage('');
     try {
       const updatedTool = await updateToolWithFeedback(content, generatedTool, feedback);
       setGeneratedTool(updatedTool);
       setFeedback('');
+      setUpdateMessage('Tool updated! Your requested changes have been applied.');
     } catch (err: any) {
       setError('Failed to update tool. Please try again.');
     } finally {
@@ -285,6 +288,10 @@ function App() {
                     >
                       {updating ? 'Updating...' : 'Update Tool'}
                     </button>
+                    {updating && <LoadingBar />}
+                    {updateMessage && !updating && (
+                      <div className="mt-3 text-green-700 bg-green-100 rounded p-2 text-sm">{updateMessage}</div>
+                    )}
                   </div>
                 </>
               )}
