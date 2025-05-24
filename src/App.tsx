@@ -67,6 +67,7 @@ function Generator() {
 
   const checkAuth = async () => {
     const { isAuthenticated } = await getAuthState();
+    console.log('isAuthenticated:', isAuthenticated);
     setIsAuthenticated(isAuthenticated);
   };
 
