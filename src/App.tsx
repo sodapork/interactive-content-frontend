@@ -252,47 +252,51 @@ function App() {
                   </ul>
                 </div>
               )}
-              {generatedTool && !publishedUrl && (
+              {generatedTool && (
                 <>
                   <ToolPreview tool={generatedTool} />
-                  <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                    <button
-                      className="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md shadow-sm text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                      onClick={handlePublish}
-                      disabled={publishing}
-                    >
-                      {publishing ? 'Publishing...' : 'Publish & Get Embed Code'}
-                    </button>
-                    <button
-                      className="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                      onClick={handleTryDifferentIdea}
-                      disabled={loading || toolIdeas.length === 0}
-                    >
-                      Try Another Idea
-                    </button>
-                  </div>
-                  <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
-                    <h4 className="text-md font-semibold mb-2">Request a Change or Edit</h4>
-                    <textarea
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
-                      rows={3}
-                      placeholder="Describe what you want to change or add (e.g., 'Add a pie chart', 'Change color to green')"
-                      value={feedback}
-                      onChange={e => setFeedback(e.target.value)}
-                      disabled={updating}
-                    />
-                    <button
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-                      onClick={handleUpdateTool}
-                      disabled={updating || !feedback.trim()}
-                    >
-                      {updating ? 'Updating...' : 'Update Tool'}
-                    </button>
-                    {updating && <LoadingBar />}
-                    {updateMessage && !updating && (
-                      <div className="mt-3 text-green-700 bg-green-100 rounded p-2 text-sm">{updateMessage}</div>
-                    )}
-                  </div>
+                  {(!publishedUrl || publishedUrl) && (
+                    <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
+                      <h4 className="text-md font-semibold mb-2">Request a Change or Edit</h4>
+                      <textarea
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
+                        rows={3}
+                        placeholder="Describe what you want to change or add (e.g., 'Add a pie chart', 'Change color to green')"
+                        value={feedback}
+                        onChange={e => setFeedback(e.target.value)}
+                        disabled={updating}
+                      />
+                      <button
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                        onClick={handleUpdateTool}
+                        disabled={updating || !feedback.trim()}
+                      >
+                        {updating ? 'Updating...' : 'Update Tool'}
+                      </button>
+                      {updating && <LoadingBar />}
+                      {updateMessage && !updating && (
+                        <div className="mt-3 text-green-700 bg-green-100 rounded p-2 text-sm">{updateMessage}</div>
+                      )}
+                    </div>
+                  )}
+                  {(!publishedUrl) && (
+                    <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                      <button
+                        className="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md shadow-sm text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        onClick={handlePublish}
+                        disabled={publishing}
+                      >
+                        {publishing ? 'Publishing...' : 'Publish & Get Embed Code'}
+                      </button>
+                      <button
+                        className="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        onClick={handleTryDifferentIdea}
+                        disabled={loading || toolIdeas.length === 0}
+                      >
+                        Try Another Idea
+                      </button>
+                    </div>
+                  )}
                 </>
               )}
               {generatedTool && publishedUrl && (
