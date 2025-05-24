@@ -50,8 +50,8 @@ const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
   }, [tool]);
 
   return (
-    <div className="bg-white shadow sm:rounded-lg">
-      <div className="px-4 py-5 sm:p-6">
+    <div className="bg-white shadow sm:rounded-lg max-w-4xl mx-auto">
+      <div className="px-6 py-8 sm:p-10">
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           Generated Tool Preview
         </h3>
@@ -63,7 +63,7 @@ const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
             <iframe
               ref={iframeRef}
               title="Tool Preview"
-              style={{ width: '100%', height: 400, border: '1px solid #ccc', background: '#fff' }}
+              style={{ width: '100%', height: 700, border: '1px solid #ccc', background: '#fff' }}
             />
           </div>
         </div>
