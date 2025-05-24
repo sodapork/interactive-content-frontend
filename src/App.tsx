@@ -60,6 +60,8 @@ function App() {
   const [loadingRecent, setLoadingRecent] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
   const [updateMessage, setUpdateMessage] = useState<string>('');
+  const [showStyleInput, setShowStyleInput] = useState(false);
+  const [userStyle, setUserStyle] = useState<any>(null);
 
   useEffect(() => {
     if (tab === 'recent') {
@@ -71,7 +73,7 @@ function App() {
     }
   }, [tab]);
 
-  const handleContentSubmit = async (input: string, type: ContentType) => {
+  const handleContentSubmit = async (input: string, type: ContentType, userStyleOverride?: any) => {
     setContent(input);
     setContentType(type);
     setLoading(true);
@@ -82,16 +84,26 @@ function App() {
     setSelectedIdea(null);
     setShowOtherIdeas(false);
     setStyleSummary('');
+    setShowStyleInput(false);
     let blogContent = input;
     let styleSummaryValue = '';
     try {
       if (type === 'url') {
         // Call backend to extract content from URL
-        const response = await axios.post(`${BACKEND_URL}/extract`, { url: input });
+        const response = await axios.post(`${BACKEND_URL}/extract`, { url: input, userStyle: userStyleOverride });
         if (response.data && response.data.content && response.data.content.trim()) {
           blogContent = response.data.content;
           styleSummaryValue = response.data.styleSummary || '';
           setStyleSummary(styleSummaryValue);
+          // If styleSummary is empty, prompt for user style input
+          const allEmpty = styleSummaryValue && typeof styleSummaryValue === 'object' && Object.values(styleSummaryValue).every(
+            s => !s || Object.values(s).every((v: any) => !v)
+          );
+          if (allEmpty && !userStyleOverride) {
+            setShowStyleInput(true);
+            setLoading(false);
+            return;
+          }
         } else {
           setLoading(false);
           setError('Failed to extract content from URL. Please try a different link or paste the content manually.');
@@ -239,7 +251,18 @@ function App() {
         <div className="px-4 py-6 sm:px-0">
           {tab === 'generate' && (
             <div className="grid grid-cols-1 gap-6">
-              <ContentInput onSubmit={handleContentSubmit} />
+              {showStyleInput ? (
+                <ContentInput
+                  onSubmit={handleContentSubmit}
+                  showStyleInput={true}
+                  onStyleSubmit={style => {
+                    setUserStyle(style);
+                    handleContentSubmit(content, contentType, style);
+                  }}
+                />
+              ) : (
+                <ContentInput onSubmit={handleContentSubmit} />
+              )}
               {loading && <LoadingBar />}
               {error && <div className="text-red-600">{error}</div>}
               {toolIdeas.length > 0 && (
