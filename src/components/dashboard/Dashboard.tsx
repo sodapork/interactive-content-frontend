@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { signOut } from '../../services/memberstack';
+import { useMemberstack } from '@memberstack/react';
 import axios from 'axios';
 
 const BACKEND_URL = 'https://interactive-content-backend.onrender.com';
@@ -14,6 +14,7 @@ const Dashboard: React.FC = () => {
   const [tools, setTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const memberstack = useMemberstack();
 
   useEffect(() => {
     fetchTools();
@@ -32,10 +33,10 @@ const Dashboard: React.FC = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
-      window.location.href = '/';
+      await memberstack.openModal('LOGIN');
+      window.location.reload();
     } catch (err) {
-      setError('Failed to sign out');
+      setError('Failed to sign out.');
     }
   };
 

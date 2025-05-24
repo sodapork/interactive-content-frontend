@@ -1,12 +1,14 @@
 import axios from 'axios';
-import { memberstack } from './memberstack';
+// import { memberstack } from './memberstack';
 
 const BACKEND_URL = 'https://interactive-content-backend.onrender.com';
 
 // Helper to get auth headers
+// Use the useMemberstack hook in your component to get the token if needed
 const getAuthHeaders = async () => {
-  const token = await memberstack.getToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  // Example: const token = await memberstack.getToken();
+  // return token ? { Authorization: `Bearer ${token}` } : {};
+  return {};
 };
 
 export async function generateToolIdeas(content: string): Promise<string[]> {

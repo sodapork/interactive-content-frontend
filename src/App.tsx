@@ -7,10 +7,10 @@ import Dashboard from './components/dashboard/Dashboard';
 import AuthWrapper from './components/auth/AuthWrapper';
 import { ContentType } from './types';
 import { generateToolIdeas, processContentForIdea, updateToolWithFeedback } from './services/contentProcessor';
-import { getAuthState } from './services/memberstack';
 import axios from 'axios';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
+import { useMemberstack } from '@memberstack/react';
 
 const BACKEND_URL = 'https://interactive-content-backend.onrender.com';
 
@@ -53,6 +53,7 @@ function Generator() {
   const location = useLocation();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const memberstack = useMemberstack();
 
   useEffect(() => {
     checkAuth();
@@ -66,9 +67,14 @@ function Generator() {
   }, [tab]);
 
   const checkAuth = async () => {
-    const { isAuthenticated } = await getAuthState();
-    console.log('isAuthenticated:', isAuthenticated);
-    setIsAuthenticated(isAuthenticated);
+    try {
+      const member = await memberstack.getCurrentMember();
+      const isAuthenticated = !!member;
+      console.log('isAuthenticated:', isAuthenticated);
+      setIsAuthenticated(isAuthenticated);
+    } catch {
+      setIsAuthenticated(false);
+    }
   };
 
   const handleContentSubmit = async (input: string, type: ContentType) => {
