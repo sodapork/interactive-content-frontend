@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAuthState } from '../../services/memberstack';
+import { useMemberstack } from '@memberstack/react';
 import Login from './Login';
 import Signup from './Signup';
 
@@ -10,14 +10,19 @@ interface AuthWrapperProps {
 const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [showSignup, setShowSignup] = useState(false);
+  const memberstack = useMemberstack();
 
   useEffect(() => {
     checkAuth();
   }, []);
 
   const checkAuth = async () => {
-    const { isAuthenticated } = await getAuthState();
-    setIsAuthenticated(isAuthenticated);
+    try {
+      const member = await memberstack.getCurrentMember();
+      setIsAuthenticated(!!member);
+    } catch {
+      setIsAuthenticated(false);
+    }
   };
 
   const handleAuthSuccess = () => {
