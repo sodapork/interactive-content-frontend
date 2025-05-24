@@ -217,26 +217,24 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-background text-text font-sans">
       <Notification
         message={notification?.message || ''}
         type={notification?.type || 'success'}
         onClose={() => setNotification(null)}
       />
-      <header className="bg-white shadow">
+      <header className="bg-surface shadow border-b border-accent/20">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Interactive Content Generator
-          </h1>
+          <h1 className="text-3xl font-extrabold text-accent drop-shadow">Interactive Content Generator</h1>
           <div className="flex gap-2">
             <button
-              className={`px-4 py-2 rounded-md ${tab === 'generate' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${tab === 'generate' ? 'bg-accent text-white shadow' : 'bg-background text-textSecondary border border-accent/30'}`}
               onClick={() => setTab('generate')}
             >
               Generate Tool
             </button>
             <button
-              className={`px-4 py-2 rounded-md ${tab === 'recent' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${tab === 'recent' ? 'bg-accent text-white shadow' : 'bg-background text-textSecondary border border-accent/30'}`}
               onClick={() => setTab('recent')}
             >
               Recently Published
@@ -244,7 +242,7 @@ function App() {
           </div>
         </div>
       </header>
-      <section className="bg-gradient-to-br from-blue-600 to-blue-400 py-20 text-center text-white">
+      <section className="bg-gradient-to-br from-accent to-accent2 py-20 text-center text-white shadow-lg border-b border-accent/30">
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg">Give your content the sauce</h1>
         <p className="text-2xl font-medium max-w-2xl mx-auto drop-shadow">Automatically create interactive tools based on your blog content.</p>
       </section>
@@ -265,15 +263,15 @@ function App() {
                 <ContentInput onSubmit={handleContentSubmit} />
               )}
               {loading && <LoadingBar />}
-              {error && <div className="text-red-600">{error}</div>}
+              {error && <div className="text-red-500 font-semibold">{error}</div>}
               {toolIdeas.length > 0 && (
-                <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
-                  <h4 className="text-md font-semibold mb-2">Choose an Interactive Tool Idea</h4>
+                <div className="bg-surface shadow-lg rounded-xl p-6 mt-4 border border-accent/20">
+                  <h4 className="text-md font-semibold mb-2 text-accent">Choose an Interactive Tool Idea</h4>
                   <ul className="space-y-2">
                     {toolIdeas.map((idea, idx) => (
                       <li key={idx}>
                         <button
-                          className={`w-full text-left px-4 py-2 rounded-md border border-blue-200 transition-colors duration-150 focus:outline-none ${selectedIdea === idea ? 'bg-blue-100 border-blue-500 font-bold text-blue-800' : 'hover:bg-blue-50'}`}
+                          className={`w-full text-left px-4 py-2 rounded-md border border-accent/20 transition-colors duration-150 focus:outline-none font-semibold ${selectedIdea === idea ? 'bg-accent/20 border-accent font-bold text-accent' : 'hover:bg-surface/80 text-textSecondary'}`}
                           onClick={() => handleIdeaSelect(idea)}
                           disabled={loading}
                         >
@@ -288,10 +286,10 @@ function App() {
                 <>
                   <ToolPreview tool={generatedTool} />
                   {(!publishedUrl || publishedUrl) && (
-                    <div className="bg-white shadow sm:rounded-lg p-6 mt-4">
-                      <h4 className="text-md font-semibold mb-2">Request a Change or Edit</h4>
+                    <div className="bg-surface shadow-lg rounded-xl p-6 mt-4 border border-accent/20">
+                      <h4 className="text-md font-semibold mb-2 text-accent">Request a Change or Edit</h4>
                       <textarea
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
+                        className="block w-full rounded-md border border-accent/20 shadow-sm focus:border-accent focus:ring-accent sm:text-sm mb-2 bg-background text-text placeholder-textSecondary"
                         rows={3}
                         placeholder="Describe what you want to change or add (e.g., 'Add a pie chart', 'Change color to green')"
                         value={feedback}
@@ -299,7 +297,7 @@ function App() {
                         disabled={updating}
                       />
                       <button
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50"
                         onClick={handleUpdateTool}
                         disabled={updating || !feedback.trim()}
                       >
@@ -307,21 +305,21 @@ function App() {
                       </button>
                       {updating && <LoadingBar />}
                       {updateMessage && !updating && (
-                        <div className="mt-3 text-green-700 bg-green-100 rounded p-2 text-sm">{updateMessage}</div>
+                        <div className="mt-3 text-green-400 bg-accent/10 rounded p-2 text-sm">{updateMessage}</div>
                       )}
                     </div>
                   )}
                   {(!publishedUrl) && (
                     <div className="flex flex-col sm:flex-row gap-4 mt-4">
                       <button
-                        className="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md shadow-sm text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        className="inline-flex items-center px-4 py-2 border border-accent text-sm font-medium rounded-md shadow-sm text-accent bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
                         onClick={handlePublish}
                         disabled={publishing}
                       >
                         {publishing ? 'Publishing...' : 'Publish & Get Embed Code'}
                       </button>
                       <button
-                        className="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        className="inline-flex items-center px-4 py-2 border border-accent2 text-sm font-medium rounded-md shadow-sm text-accent2 bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent2"
                         onClick={handleTryDifferentIdea}
                         disabled={loading || toolIdeas.length === 0}
                       >
@@ -336,7 +334,7 @@ function App() {
                   <ToolPreview tool={generatedTool} />
                   <div className="flex flex-col sm:flex-row gap-4 mt-4">
                     <button
-                      className="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md shadow-sm text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      className="inline-flex items-center px-4 py-2 border border-accent text-sm font-medium rounded-md shadow-sm text-accent bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
                       onClick={() => {
                         navigator.clipboard.writeText(`<iframe src=\"${publishedUrl}\" width=\"100%\" height=\"700\" style=\"border:none;overflow:auto;\"></iframe>`);
                       }}
@@ -344,7 +342,7 @@ function App() {
                       Copy Embed Code
                     </button>
                     <button
-                      className="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      className="inline-flex items-center px-4 py-2 border border-accent2 text-sm font-medium rounded-md shadow-sm text-accent2 bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent2"
                       onClick={() => {
                         navigator.clipboard.writeText(generatedTool);
                       }}
@@ -353,16 +351,16 @@ function App() {
                     </button>
                   </div>
                   <div className="mt-4">
-                    <label className="block text-sm font-medium text-gray-700">Embed Code</label>
+                    <label className="block text-sm font-medium text-textSecondary">Embed Code</label>
                     <textarea
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
+                      className="block w-full rounded-md border border-accent/20 shadow-sm focus:border-accent focus:ring-accent sm:text-sm mb-2 bg-background text-text"
                       rows={2}
                       readOnly
                       value={`<iframe src=\"${publishedUrl}\" width=\"100%\" height=\"700\" style=\"border:none;overflow:auto;\"></iframe>`}
                     />
-                    <label className="block text-sm font-medium text-gray-700 mt-2">Full Tool Code</label>
+                    <label className="block text-sm font-medium text-textSecondary mt-2">Full Tool Code</label>
                     <textarea
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm mb-2"
+                      className="block w-full rounded-md border border-accent/20 shadow-sm focus:border-accent focus:ring-accent sm:text-sm mb-2 bg-background text-text"
                       rows={4}
                       readOnly
                       value={generatedTool}
@@ -374,11 +372,11 @@ function App() {
           )}
           {tab === 'recent' && (
             <div>
-              <h2 className="text-2xl font-semibold mb-4">Recently Published Tools</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-accent">Recently Published Tools</h2>
               <div className="mb-6 flex justify-center">
                 <input
                   type="text"
-                  className="w-full max-w-md px-4 py-2 rounded-lg border border-gray-300 shadow focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-base transition-all placeholder-gray-400"
+                  className="w-full max-w-md px-4 py-2 rounded-lg border border-accent/20 shadow focus:ring-2 focus:ring-accent focus:border-accent text-base transition-all placeholder-textSecondary bg-background text-text"
                   placeholder="Search tools by title..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
@@ -392,9 +390,9 @@ function App() {
                     {recentTools
                       .filter(tool => formatToolTitle(tool.name).toLowerCase().includes(search.toLowerCase()))
                       .map(tool => (
-                        <div key={tool.url} className="bg-white shadow rounded p-4 flex flex-col items-center">
+                        <div key={tool.url} className="bg-surface shadow-lg rounded-xl p-4 flex flex-col items-center border border-accent/20">
                           <div className="mb-2 w-full text-center">
-                            <h3 className="text-lg font-bold text-gray-900">{formatToolTitle(tool.name)}</h3>
+                            <h3 className="text-lg font-bold text-accent">{formatToolTitle(tool.name)}</h3>
                           </div>
                           <iframe
                             src={tool.url}
@@ -404,7 +402,7 @@ function App() {
                             title={tool.name}
                           />
                           <button
-                            className="mt-2 px-3 py-1.5 border border-blue-600 text-xs font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            className="mt-2 px-3 py-1.5 border border-accent text-xs font-medium rounded-md shadow-sm text-accent bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
                             onClick={() => handleCopyEmbed(tool.url)}
                           >
                             Copy Embed
@@ -413,18 +411,12 @@ function App() {
                             href={tool.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="mt-2 text-blue-600 underline text-xs"
+                            className="mt-2 text-accent underline text-xs"
                           >
                             Open in new tab
                           </a>
                         </div>
                       ))}
-                  </div>
-                  <div className="w-full flex justify-center mt-10">
-                    <div className="fixed bottom-0 left-0 w-full bg-blue-700 text-white py-4 text-center shadow-lg z-50">
-                      <span className="text-lg font-semibold">Create your own interactive content tool here: </span>
-                      <a href="/" className="underline font-bold hover:text-blue-200">Interactive Content Generator</a>
-                    </div>
                   </div>
                 </>
               )}
