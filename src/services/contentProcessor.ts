@@ -1,6 +1,13 @@
 import axios from 'axios';
+import { memberstack } from './memberstack';
 
 const BACKEND_URL = 'https://interactive-content-backend.onrender.com';
+
+// Helper to get auth headers
+const getAuthHeaders = async () => {
+  const token = await memberstack.getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 export async function generateToolIdeas(content: string): Promise<string[]> {
   const response = await axios.post(`${BACKEND_URL}/ideas`, { content });
@@ -19,4 +26,20 @@ export async function updateToolWithFeedback(
 ): Promise<string> {
   const response = await axios.post(`${BACKEND_URL}/update`, { content, currentTool, feedback });
   return response.data.tool || '';
+}
+
+export async function publishTool(filename: string, html: string): Promise<string> {
+  const headers = await getAuthHeaders();
+  const response = await axios.post(
+    `${BACKEND_URL}/publish`,
+    { filename, html },
+    { headers }
+  );
+  return response.data.url || '';
+}
+
+export async function getRecentTools(): Promise<Array<{ name: string; url: string; createdAt: string }>> {
+  const headers = await getAuthHeaders();
+  const response = await axios.get(`${BACKEND_URL}/recent`, { headers });
+  return response.data.tools || [];
 } 
