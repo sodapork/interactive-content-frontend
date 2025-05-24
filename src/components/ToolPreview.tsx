@@ -23,6 +23,103 @@ function parseToolCode(tool: string) {
   return { html, style, script };
 }
 
+function getDefaultCleanStyle() {
+  return `<style>
+    html, body {
+      background: #181824 !important;
+      color: #fff !important;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+      margin: 0; padding: 0;
+      min-height: 100vh;
+      font-size: 18px;
+      letter-spacing: 0.01em;
+      line-height: 1.6;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: #fff;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.01em;
+    }
+    p, ul, ol, li, label, input, textarea, select, button {
+      color: #fff;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+      font-size: 1rem;
+      margin-bottom: 1.2em;
+    }
+    button, input[type="button"], input[type="submit"] {
+      background: #232336;
+      color: #fff;
+      border: 1.5px solid #fff;
+      border-radius: 0.5em;
+      padding: 0.7em 1.5em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+    }
+    button:focus, button:active, input:focus, textarea:focus, select:focus {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+      background: #fff;
+      color: #181824;
+      border-color: #fff;
+    }
+    input, textarea, select {
+      background: #232336;
+      color: #fff;
+      border: 1.5px solid #fff;
+      border-radius: 0.5em;
+      padding: 0.7em 1em;
+      margin-bottom: 1em;
+      font-size: 1rem;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    }
+    a {
+      color: #fff;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    a:hover {
+      color: #bbb;
+    }
+    .container, .main, .content {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      background: #181824cc;
+      border-radius: 1.5rem;
+      box-shadow: 0 2px 32px 0 #000a;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5em;
+    }
+    th, td {
+      border: 1px solid #fff2;
+      padding: 0.7em 1em;
+      text-align: left;
+    }
+    th {
+      background: #232336;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background: #232336;
+    }
+    ::selection {
+      background: #fff;
+      color: #181824;
+    }
+  </style>`;
+}
+
 // ResizablePreview component for drag-to-resize functionality
 const ResizablePreview: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const boxRef = useRef<HTMLDivElement>(null);
@@ -90,11 +187,13 @@ const ToolPreview: React.FC<ToolPreviewProps> = ({ tool }) => {
         doc.write(`
           <html>
             <head>
+              <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
               <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+              ${getDefaultCleanStyle()}
               ${style}
             </head>
             <body>
-              ${html}
+              <div class="container">${html}</div>
               ${script}
             </body>
           </html>

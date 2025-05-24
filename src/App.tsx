@@ -21,23 +21,6 @@ function Notification({ message, type, onClose }: { message: string, type: 'succ
   );
 }
 
-function LoadingBar() {
-  return (
-    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden my-6">
-      <div className="h-full bg-blue-500 animate-loading-bar" style={{ width: '100%' }} />
-      <style>{`
-        @keyframes loading-bar {
-          0% { width: 0; }
-          100% { width: 100%; }
-        }
-        .animate-loading-bar {
-          animation: loading-bar 1.2s linear infinite alternate;
-        }
-      `}</style>
-    </div>
-  );
-}
-
 function App() {
   const [content, setContent] = useState<string>('');
   const [contentType, setContentType] = useState<ContentType>('text');
@@ -49,7 +32,6 @@ function App() {
   const [feedback, setFeedback] = useState<string>('');
   const [updating, setUpdating] = useState<boolean>(false);
   const [showOtherIdeas, setShowOtherIdeas] = useState<boolean>(false);
-  const [styleSummary, setStyleSummary] = useState<string>('');
   const [publishedUrl, setPublishedUrl] = useState<string>('');
   const [publishing, setPublishing] = useState<boolean>(false);
   const [toolIsLive, setToolIsLive] = useState<boolean>(false);
@@ -60,8 +42,6 @@ function App() {
   const [loadingRecent, setLoadingRecent] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
   const [updateMessage, setUpdateMessage] = useState<string>('');
-  const [showStyleInput, setShowStyleInput] = useState(false);
-  const [userStyle, setUserStyle] = useState<any>(null);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
@@ -74,7 +54,7 @@ function App() {
     }
   }, [tab]);
 
-  const handleContentSubmit = async (input: string, type: ContentType, userStyleOverride?: any) => {
+  const handleContentSubmit = async (input: string, type: ContentType) => {
     setContent(input);
     setContentType(type);
     setLoading(true);
@@ -84,27 +64,13 @@ function App() {
     setToolIdeas([]);
     setSelectedIdea(null);
     setShowOtherIdeas(false);
-    setStyleSummary('');
-    setShowStyleInput(false);
     let blogContent = input;
-    let styleSummaryValue = '';
     try {
       if (type === 'url') {
         // Call backend to extract content from URL
-        const response = await axios.post(`${BACKEND_URL}/extract`, { url: input, userStyle: userStyleOverride });
+        const response = await axios.post(`${BACKEND_URL}/extract`, { url: input });
         if (response.data && response.data.content && response.data.content.trim()) {
           blogContent = response.data.content;
-          styleSummaryValue = response.data.styleSummary || '';
-          setStyleSummary(styleSummaryValue);
-          // If styleSummary is empty, prompt for user style input
-          const allEmpty = styleSummaryValue && typeof styleSummaryValue === 'object' && Object.values(styleSummaryValue).every(
-            s => !s || Object.values(s).every((v: any) => !v)
-          );
-          if (allEmpty && !userStyleOverride) {
-            setShowStyleInput(true);
-            setLoading(false);
-            return;
-          }
         } else {
           setLoading(false);
           setError('Failed to extract content from URL. Please try a different link or paste the content manually.');
@@ -118,7 +84,7 @@ function App() {
       }
       // Log the content being sent to /ideas
       console.log('Sending to /ideas:', blogContent.slice(0, 300));
-      const ideas = await generateToolIdeas(blogContent, styleSummaryValue || styleSummary);
+      const ideas = await generateToolIdeas(blogContent);
       setToolIdeas(ideas);
       setContent(blogContent); // Store extracted content for later use
     } catch (err: any) {
@@ -136,7 +102,7 @@ function App() {
     setFeedback('');
     setShowOtherIdeas(false);
     try {
-      const tool = await processContentForIdea(content, idea, styleSummary);
+      const tool = await processContentForIdea(content, idea);
       setGeneratedTool(tool);
     } catch (err: any) {
       setError('Failed to generate tool. Please try again.');
@@ -250,19 +216,8 @@ function App() {
         <div className="px-4 py-6 sm:px-0">
           {tab === 'generate' && (
             <div className="grid grid-cols-1 gap-6">
-              {showStyleInput ? (
-                <ContentInput
-                  onSubmit={handleContentSubmit}
-                  showStyleInput={true}
-                  onStyleSubmit={style => {
-                    setUserStyle(style);
-                    handleContentSubmit(content, contentType, style);
-                  }}
-                />
-              ) : (
-                <ContentInput onSubmit={handleContentSubmit} />
-              )}
-              {loading && <LoadingBar />}
+              <ContentInput onSubmit={handleContentSubmit} />
+              {loading && <LoadingSpinner />}
               {error && <div className="text-red-500 font-semibold">{error}</div>}
               {toolIdeas.length > 0 && (
                 <div className="bg-surface shadow-lg rounded-xl p-6 mt-4 border border-accent/20">
@@ -303,7 +258,7 @@ function App() {
                       >
                         {updating ? 'Updating...' : 'Update Tool'}
                       </button>
-                      {updating && <LoadingBar />}
+                      {updating && <LoadingSpinner />}
                       {updateMessage && !updating && (
                         <div className="mt-3 text-green-400 bg-accent/10 rounded p-2 text-sm">{updateMessage}</div>
                       )}
@@ -383,7 +338,7 @@ function App() {
                 />
               </div>
               {loadingRecent ? (
-                <LoadingBar />
+                <LoadingSpinner />
               ) : (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
