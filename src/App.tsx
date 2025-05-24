@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import ContentInput from './components/ContentInput';
 import ToolPreview from './components/ToolPreview';
 import LoadingSpinner from './components/LoadingSpinner';
+import Dashboard from './components/dashboard/Dashboard';
+import AuthWrapper from './components/auth/AuthWrapper';
 import { ContentType } from './types';
 import { generateToolIdeas, processContentForIdea, updateToolWithFeedback } from './services/contentProcessor';
+import { getAuthState } from './services/memberstack';
 import axios from 'axios';
+import Login from './components/auth/Login';
+import Signup from './components/auth/Signup';
 
 const BACKEND_URL = 'https://interactive-content-backend.onrender.com';
 
@@ -21,7 +27,7 @@ function Notification({ message, type, onClose }: { message: string, type: 'succ
   );
 }
 
-function App() {
+function Generator() {
   const [content, setContent] = useState<string>('');
   const [contentType, setContentType] = useState<ContentType>('text');
   const [toolIdeas, setToolIdeas] = useState<string[]>([]);
@@ -43,8 +49,13 @@ function App() {
   const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
   const [updateMessage, setUpdateMessage] = useState<string>('');
   const [search, setSearch] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const location = useLocation();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
 
   useEffect(() => {
+    checkAuth();
     if (tab === 'recent') {
       setLoadingRecent(true);
       fetch(`${BACKEND_URL}/recent`)
@@ -53,6 +64,11 @@ function App() {
         .finally(() => setLoadingRecent(false));
     }
   }, [tab]);
+
+  const checkAuth = async () => {
+    const { isAuthenticated } = await getAuthState();
+    setIsAuthenticated(isAuthenticated);
+  };
 
   const handleContentSubmit = async (input: string, type: ContentType) => {
     setContent(input);
@@ -210,21 +226,56 @@ function App() {
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <h1 className="text-3xl font-extrabold text-accent drop-shadow">Interactive Content Generator</h1>
           <div className="flex gap-2">
-            <button
-              className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${tab === 'generate' ? 'bg-accent text-white shadow' : 'bg-background text-textSecondary border border-accent/30'}`}
-              onClick={() => setTab('generate')}
+            <Link
+              to="/"
+              className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${location.pathname === '/' ? 'bg-accent text-white shadow' : 'bg-background text-textSecondary border border-accent/30'}`}
             >
               Generate Tool
-            </button>
-            <button
-              className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${tab === 'recent' ? 'bg-accent text-white shadow' : 'bg-background text-textSecondary border border-accent/30'}`}
-              onClick={() => setTab('recent')}
-            >
-              Recently Published
-            </button>
+            </Link>
+            {isAuthenticated && (
+              <Link
+                to="/dashboard"
+                className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${location.pathname === '/dashboard' ? 'bg-accent text-white shadow' : 'bg-background text-textSecondary border border-accent/30'}`}
+              >
+                My Tools
+              </Link>
+            )}
+            {!isAuthenticated && (
+              <button
+                className="px-4 py-2 rounded-md font-semibold bg-accent text-white shadow hover:bg-accent2 transition-colors duration-200"
+                onClick={() => setShowAuthModal(true)}
+              >
+                Login / Signup
+              </button>
+            )}
           </div>
         </div>
       </header>
+      {/* Auth Modal */}
+      {showAuthModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-surface rounded-xl shadow-lg p-8 border border-accent/20 max-w-md w-full relative">
+            <button
+              className="absolute top-2 right-2 text-2xl text-accent hover:text-accent2 font-bold"
+              onClick={() => setShowAuthModal(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            {showSignup ? (
+              <Signup
+                onSuccess={() => { setShowAuthModal(false); setShowSignup(false); checkAuth(); }}
+                onSwitchToLogin={() => setShowSignup(false)}
+              />
+            ) : (
+              <Login
+                onSuccess={() => { setShowAuthModal(false); setShowSignup(false); checkAuth(); }}
+                onSwitchToSignup={() => setShowSignup(true)}
+              />
+            )}
+          </div>
+        </div>
+      )}
       <section className="bg-gradient-to-br from-accent to-accent2 py-20 text-center text-white shadow-lg border-b border-accent/30">
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg">Give your content the sauce</h1>
         <p className="text-2xl font-medium max-w-2xl mx-auto drop-shadow">Automatically create interactive tools based on your blog content.</p>
@@ -406,6 +457,24 @@ function App() {
         </div>
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Generator />} />
+        <Route
+          path="/dashboard"
+          element={
+            <AuthWrapper>
+              <Dashboard />
+            </AuthWrapper>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
