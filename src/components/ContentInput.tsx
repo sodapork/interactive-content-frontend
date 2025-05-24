@@ -40,7 +40,7 @@ const ContentInput: React.FC<ContentInputProps> = ({ onSubmit }) => {
         <input
           type="text"
           className="w-full px-6 py-4 rounded-lg border border-accent/20 shadow focus:ring-2 focus:ring-accent focus:border-accent text-lg transition-all placeholder-textSecondary bg-background text-text"
-          placeholder={type === 'url' ? 'Paste your blog post URL here...' : 'Paste or write your blog post content here...'}
+          placeholder={type === 'url' ? 'Paste your blog post URL here...' : 'Describe your blog post in a sentence or two...'}
           value={input}
           onChange={e => setInput(e.target.value)}
         />

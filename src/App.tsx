@@ -94,6 +94,23 @@ function App() {
     }
   };
 
+  const handleRerollIdeas = async () => {
+    setLoading(true);
+    setError(null);
+    setGeneratedTool('');
+    setFeedback('');
+    setSelectedIdea(null);
+    setShowOtherIdeas(false);
+    try {
+      const ideas = await generateToolIdeas(content);
+      setToolIdeas(ideas);
+    } catch (err: any) {
+      setError('Failed to generate new tool ideas. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleIdeaSelect = async (idea: string) => {
     setSelectedIdea(idea);
     setLoading(true);
@@ -221,7 +238,16 @@ function App() {
               {error && <div className="text-red-500 font-semibold">{error}</div>}
               {toolIdeas.length > 0 && (
                 <div className="bg-surface shadow-lg rounded-xl p-6 mt-4 border border-accent/20">
-                  <h4 className="text-md font-semibold mb-2 text-accent">Choose an Interactive Tool Idea</h4>
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-xl font-bold text-accent">Choose an Idea to Generate Your Tool</h4>
+                    <button
+                      onClick={handleRerollIdeas}
+                      className="px-4 py-2 rounded-md bg-accent/10 text-accent hover:bg-accent/20 transition-colors duration-200 font-semibold"
+                      disabled={loading}
+                    >
+                      Reroll Ideas
+                    </button>
+                  </div>
                   <ul className="space-y-2">
                     {toolIdeas.map((idea, idx) => (
                       <li key={idx}>
