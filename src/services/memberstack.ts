@@ -1,9 +1,9 @@
-import { Memberstack } from '@memberstack/react';
+// Memberstack logic should be handled via the useMemberstack hook in React components.
+// Example usage in a component:
+// import { useMemberstack } from '@memberstack/react';
+// const memberstack = useMemberstack();
 
-// Initialize Memberstack
-export const memberstack = new Memberstack({
-  publicKey: process.env.REACT_APP_MEMBERSTACK_PUBLIC_KEY || '',
-});
+// All authentication and member actions should be performed using the hook above directly in your components.
 
 // Auth state management
 export const getAuthState = async () => {
