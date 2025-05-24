@@ -195,6 +195,14 @@ function App() {
     navigator.clipboard.writeText(snippet);
   };
 
+  // Helper to format tool title from filename
+  function formatToolTitle(filename: string) {
+    // Remove timestamp and .html extension
+    let name = filename.replace(/-\d+\.html$/, '').replace(/\.html$/, '');
+    // Replace dashes with spaces and capitalize each word
+    return name.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Notification
@@ -344,11 +352,14 @@ function App() {
             <div>
               <h2 className="text-2xl font-semibold mb-4">Recently Published Tools</h2>
               {loadingRecent ? (
-                <LoadingSpinner />
+                <LoadingBar />
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {recentTools.map(tool => (
                     <div key={tool.url} className="bg-white shadow rounded p-4 flex flex-col items-center">
+                      <div className="mb-2 w-full text-center">
+                        <h3 className="text-lg font-bold text-gray-900">{formatToolTitle(tool.name)}</h3>
+                      </div>
                       <iframe
                         src={tool.url}
                         width="100%"
