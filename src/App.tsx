@@ -62,6 +62,7 @@ function App() {
   const [updateMessage, setUpdateMessage] = useState<string>('');
   const [showStyleInput, setShowStyleInput] = useState(false);
   const [userStyle, setUserStyle] = useState<any>(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (tab === 'recent') {
@@ -374,39 +375,58 @@ function App() {
           {tab === 'recent' && (
             <div>
               <h2 className="text-2xl font-semibold mb-4">Recently Published Tools</h2>
+              <div className="mb-6 flex justify-center">
+                <input
+                  type="text"
+                  className="w-full max-w-md px-4 py-2 rounded-lg border border-gray-300 shadow focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-base transition-all placeholder-gray-400"
+                  placeholder="Search tools by title..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
               {loadingRecent ? (
                 <LoadingBar />
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {recentTools.map(tool => (
-                    <div key={tool.url} className="bg-white shadow rounded p-4 flex flex-col items-center">
-                      <div className="mb-2 w-full text-center">
-                        <h3 className="text-lg font-bold text-gray-900">{formatToolTitle(tool.name)}</h3>
-                      </div>
-                      <iframe
-                        src={tool.url}
-                        width="100%"
-                        height="300"
-                        style={{ border: 'none', overflow: 'auto' }}
-                        title={tool.name}
-                      />
-                      <button
-                        className="mt-2 px-3 py-1.5 border border-blue-600 text-xs font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        onClick={() => handleCopyEmbed(tool.url)}
-                      >
-                        Copy Embed
-                      </button>
-                      <a
-                        href={tool.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2 text-blue-600 underline text-xs"
-                      >
-                        Open in new tab
-                      </a>
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {recentTools
+                      .filter(tool => formatToolTitle(tool.name).toLowerCase().includes(search.toLowerCase()))
+                      .map(tool => (
+                        <div key={tool.url} className="bg-white shadow rounded p-4 flex flex-col items-center">
+                          <div className="mb-2 w-full text-center">
+                            <h3 className="text-lg font-bold text-gray-900">{formatToolTitle(tool.name)}</h3>
+                          </div>
+                          <iframe
+                            src={tool.url}
+                            width="100%"
+                            height="300"
+                            style={{ border: 'none', overflow: 'auto' }}
+                            title={tool.name}
+                          />
+                          <button
+                            className="mt-2 px-3 py-1.5 border border-blue-600 text-xs font-medium rounded-md shadow-sm text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            onClick={() => handleCopyEmbed(tool.url)}
+                          >
+                            Copy Embed
+                          </button>
+                          <a
+                            href={tool.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-2 text-blue-600 underline text-xs"
+                          >
+                            Open in new tab
+                          </a>
+                        </div>
+                      ))}
+                  </div>
+                  <div className="w-full flex justify-center mt-10">
+                    <div className="fixed bottom-0 left-0 w-full bg-blue-700 text-white py-4 text-center shadow-lg z-50">
+                      <span className="text-lg font-semibold">Create your own interactive content tool here: </span>
+                      <a href="/" className="underline font-bold hover:text-blue-200">Interactive Content Generator</a>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                </>
               )}
             </div>
           )}
