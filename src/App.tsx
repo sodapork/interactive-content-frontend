@@ -470,17 +470,12 @@ function Generator() {
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Generator />} />
-        <Route
-          path="/dashboard"
-          element={
-            <AuthWrapper>
-              <Dashboard />
-            </AuthWrapper>
-          }
-        />
-      </Routes>
+      <AuthWrapper>
+        <Routes>
+          <Route path="/" element={<Generator />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </AuthWrapper>
     </Router>
   );
 }
