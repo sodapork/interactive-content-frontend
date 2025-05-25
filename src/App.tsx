@@ -70,6 +70,7 @@ function Generator() {
   const checkAuth = async () => {
     try {
       const member = await memberstack.getCurrentMember();
+      console.log('Memberstack.getCurrentMember() result:', member);
       const isAuthenticated = !!member;
       console.log('isAuthenticated:', isAuthenticated);
       setIsAuthenticated(isAuthenticated);
