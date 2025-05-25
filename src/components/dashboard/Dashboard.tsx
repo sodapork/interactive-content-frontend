@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useMemberstack } from '@memberstack/react';
-import axios from 'axios';
+import { useMemberstack, useAuth } from '@memberstack/react';
+import { getRecentTools } from '../../services/contentProcessor';
 
 const BACKEND_URL = 'https://interactive-content-backend.onrender.com';
 
 interface Tool {
   name: string;
   url: string;
-  sha: string;
+  createdAt: string;
 }
 
 const Dashboard: React.FC = () => {
@@ -15,6 +15,7 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const memberstack = useMemberstack();
+  const { getToken } = useAuth();
 
   useEffect(() => {
     fetchTools();
@@ -22,8 +23,9 @@ const Dashboard: React.FC = () => {
 
   const fetchTools = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/recent`);
-      setTools(response.data.tools || []);
+      const token = await getToken();
+      const tools = await getRecentTools(token);
+      setTools(tools);
     } catch (err) {
       setError('Failed to fetch your tools');
     } finally {

@@ -6,11 +6,11 @@ import LoadingSpinner from './components/LoadingSpinner';
 import Dashboard from './components/dashboard/Dashboard';
 import AuthWrapper from './components/auth/AuthWrapper';
 import { ContentType } from './types';
-import { generateToolIdeas, processContentForIdea, updateToolWithFeedback } from './services/contentProcessor';
+import { generateToolIdeas, processContentForIdea, updateToolWithFeedback, publishTool } from './services/contentProcessor';
 import axios from 'axios';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
-import { useMemberstack } from '@memberstack/react';
+import { useMemberstack, useAuth } from '@memberstack/react';
 
 const BACKEND_URL = 'https://interactive-content-backend.onrender.com';
 
@@ -54,6 +54,7 @@ function Generator() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const memberstack = useMemberstack();
+  const { getToken } = useAuth();
 
   useEffect(() => {
     checkAuth();
@@ -179,12 +180,10 @@ function Generator() {
     setToolIsLive(false);
     setPublishTime(Date.now());
     try {
+      const token = await getToken();
       const filename = (selectedIdea ? selectedIdea.replace(/[^a-z0-9]/gi, '-').toLowerCase() : 'tool') + '-' + Date.now() + '.html';
-      const response = await axios.post(`${BACKEND_URL}/publish`, {
-        filename,
-        html: generatedTool
-      });
-      setPublishedUrl(response.data.url);
+      const url = await publishTool(filename, generatedTool, token);
+      setPublishedUrl(url);
       setNotification({ message: 'Tool published! Your embed code is ready.', type: 'success' });
     } catch (err) {
       setNotification({ message: 'Failed to publish tool.', type: 'error' });

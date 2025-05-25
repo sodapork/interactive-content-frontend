@@ -30,8 +30,8 @@ export async function updateToolWithFeedback(
   return response.data.tool || '';
 }
 
-export async function publishTool(filename: string, html: string): Promise<string> {
-  const headers = await getAuthHeaders();
+export async function publishTool(filename: string, html: string, token: string): Promise<string> {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
   const response = await axios.post(
     `${BACKEND_URL}/publish`,
     { filename, html },
@@ -40,8 +40,8 @@ export async function publishTool(filename: string, html: string): Promise<strin
   return response.data.url || '';
 }
 
-export async function getRecentTools(): Promise<Array<{ name: string; url: string; createdAt: string }>> {
-  const headers = await getAuthHeaders();
+export async function getRecentTools(token: string): Promise<Array<{ name: string; url: string; createdAt: string }>> {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
   const response = await axios.get(`${BACKEND_URL}/recent`, { headers });
   return response.data.tools || [];
 } 
