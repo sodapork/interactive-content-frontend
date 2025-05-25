@@ -67,7 +67,7 @@ const Dashboard: React.FC = () => {
           <h1 className="text-2xl font-bold text-accent">Your Tools</h1>
           <button
             onClick={handleSignOut}
-            className="px-4 py-2 rounded-md bg-accent/10 text-accent hover:bg-accent/20 transition-colors duration-200"
+            className="px-6 py-2.5 rounded-full bg-accent/10 text-accent hover:bg-accent/20 transition-colors duration-200 font-semibold"
           >
             Sign Out
           </button>
@@ -76,7 +76,7 @@ const Dashboard: React.FC = () => {
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {error && (
-          <div className="mb-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500">
+          <div className="mb-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500">
             {error}
           </div>
         )}
@@ -85,9 +85,9 @@ const Dashboard: React.FC = () => {
           {tools.map((tool) => (
             <div
               key={tool.url}
-              className="bg-surface shadow-lg rounded-xl p-4 flex flex-col items-center border border-accent/20"
+              className="bg-surface shadow-lg rounded-2xl p-6 flex flex-col items-center border border-accent/20"
             >
-              <div className="mb-2 w-full text-center">
+              <div className="mb-4 w-full text-center">
                 <h3 className="text-lg font-bold text-accent">
                   {formatToolTitle(tool.name)}
                 </h3>
@@ -98,11 +98,12 @@ const Dashboard: React.FC = () => {
                 height="300"
                 style={{ border: 'none', overflow: 'auto' }}
                 title={tool.name}
+                className="rounded-xl"
               />
-              <div className="mt-4 flex gap-2">
+              <div className="mt-6 flex gap-3">
                 <button
                   onClick={() => handleCopyEmbed(tool.url)}
-                  className="px-3 py-1.5 border border-accent text-xs font-medium rounded-md shadow-sm text-accent bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+                  className="px-4 py-2 border border-accent text-sm font-medium rounded-full text-accent bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-all"
                 >
                   Copy Embed
                 </button>
@@ -110,7 +111,7 @@ const Dashboard: React.FC = () => {
                   href={tool.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-1.5 border border-accent2 text-xs font-medium rounded-md shadow-sm text-accent2 bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent2"
+                  className="px-4 py-2 border border-accent2 text-sm font-medium rounded-full text-accent2 bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent2 transition-all"
                 >
                   Open Tool
                 </a>
@@ -120,8 +121,8 @@ const Dashboard: React.FC = () => {
         </div>
 
         {tools.length === 0 && !loading && (
-          <div className="text-center py-12">
-            <h3 className="text-xl font-semibold text-textSecondary mb-2">
+          <div className="text-center py-16">
+            <h3 className="text-xl font-semibold text-textSecondary mb-3">
               No tools yet
             </h3>
             <p className="text-textSecondary">

@@ -11,12 +11,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: '#181824',
-        surface: '#232336',
-        accent: '#7f5af0',
-        accent2: '#3b82f6',
-        text: '#fff',
-        textSecondary: '#e5e7eb',
+        background: '#0f0f1a',
+        surface: '#1a1a2e',
+        accent: '#6366f1',
+        accent2: '#4f46e5',
+        text: '#ffffff',
+        textSecondary: '#94a3b8',
       },
       fontFamily: {
         sans: ['Inter', 'Segoe UI', 'Arial', 'sans-serif'],

@@ -239,17 +239,17 @@ function Generator() {
       <header className="bg-surface shadow border-b border-accent/20">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <h1 className="text-3xl font-extrabold text-accent drop-shadow">Interactive Content Generator</h1>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Link
               to="/"
-              className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${location.pathname === '/' ? 'bg-accent text-white shadow' : 'bg-background text-textSecondary border border-accent/30'}`}
+              className={`px-6 py-2.5 rounded-full font-semibold transition-colors duration-200 ${location.pathname === '/' ? 'bg-accent text-white shadow-lg' : 'bg-background text-textSecondary border border-accent/30 hover:bg-surface'}`}
             >
               Generate Tool
             </Link>
             {isAuthenticated === true && (
               <Link
                 to="/dashboard"
-                className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${location.pathname === '/dashboard' ? 'bg-accent text-white shadow' : 'bg-background text-textSecondary border border-accent/30'}`}
+                className={`px-6 py-2.5 rounded-full font-semibold transition-colors duration-200 ${location.pathname === '/dashboard' ? 'bg-accent text-white shadow-lg' : 'bg-background text-textSecondary border border-accent/30 hover:bg-surface'}`}
               >
                 My Tools
               </Link>
@@ -257,13 +257,13 @@ function Generator() {
             {isAuthenticated === false && (
               <>
                 <button
-                  className="px-4 py-2 rounded-md font-semibold bg-accent text-white shadow hover:bg-accent2 transition-colors duration-200"
+                  className="px-6 py-2.5 rounded-full font-semibold bg-accent text-white shadow-lg hover:bg-accent2 transition-colors duration-200"
                   onClick={() => memberstack.openModal('LOGIN')}
                 >
                   Login
                 </button>
                 <button
-                  className="px-4 py-2 rounded-md font-semibold bg-accent2 text-white shadow hover:bg-accent transition-colors duration-200"
+                  className="px-6 py-2.5 rounded-full font-semibold bg-accent2 text-white shadow-lg hover:bg-accent transition-colors duration-200"
                   onClick={() => memberstack.openModal('SIGNUP')}
                 >
                   Sign Up
@@ -275,10 +275,10 @@ function Generator() {
       </header>
       {/* Auth Modal */}
       {showAuthModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">Sign in to Publish</h2>
-            <p className="mb-6 text-gray-600">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-surface p-8 rounded-2xl shadow-xl max-w-md w-full border border-accent/20">
+            <h2 className="text-2xl font-bold mb-4 text-accent">Sign in to Publish</h2>
+            <p className="mb-6 text-textSecondary">
               To publish your tool and get embed code, you'll need to create an account or sign in.
               You can still generate tools for free without an account.
             </p>
@@ -288,7 +288,7 @@ function Generator() {
                   setShowAuthModal(false);
                   setShowSignup(false);
                 }}
-                className="w-full bg-accent text-white py-2 px-4 rounded hover:bg-accent/90 transition-colors"
+                className="w-full bg-accent text-white py-3 px-4 rounded-full hover:bg-accent2 transition-colors font-semibold"
               >
                 Sign In
               </button>
@@ -297,13 +297,13 @@ function Generator() {
                   setShowAuthModal(false);
                   setShowSignup(true);
                 }}
-                className="w-full bg-white border border-accent text-accent py-2 px-4 rounded hover:bg-accent/10 transition-colors"
+                className="w-full bg-background border border-accent text-accent py-3 px-4 rounded-full hover:bg-surface transition-colors font-semibold"
               >
                 Create Account
               </button>
               <button
                 onClick={() => setShowAuthModal(false)}
-                className="w-full text-gray-500 hover:text-gray-700"
+                className="w-full text-textSecondary hover:text-text"
               >
                 Maybe Later
               </button>
@@ -324,9 +324,9 @@ function Generator() {
           onClose={() => setShowAuthModal(false)}
         />
       ) : null}
-      <section className="bg-gradient-to-br from-accent to-accent2 py-20 text-center text-white shadow-lg border-b border-accent/30">
-        <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg">Give your content the sauce</h1>
-        <p className="text-2xl font-medium max-w-2xl mx-auto drop-shadow">Automatically create interactive tools based on your blog content.</p>
+      <section className="bg-gradient-to-br from-accent to-accent2 py-24 text-center text-white shadow-lg border-b border-accent/30">
+        <h1 className="text-5xl font-extrabold mb-6 drop-shadow-lg">Give your content the sauce</h1>
+        <p className="text-2xl font-medium max-w-2xl mx-auto drop-shadow text-white/90">Automatically create interactive tools based on your blog content.</p>
       </section>
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">

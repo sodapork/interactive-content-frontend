@@ -18,10 +18,10 @@ const LoadingSpinner: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center py-6">
-      <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-b-4 border-accent shadow-[0_0_16px_4px_rgba(127,90,240,0.5)] mb-4"></div>
-      <p className="text-text font-semibold text-lg drop-shadow-md">{messages[currentMessageIndex]}</p>
-      <p className="text-sm text-textSecondary mt-2">Tool generation can take a few minutes. Please wait...</p>
+    <div className="flex flex-col justify-center items-center py-12">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-accent shadow-[0_0_24px_4px_rgba(99,102,241,0.3)] mb-6"></div>
+      <p className="text-text font-semibold text-xl drop-shadow-md">{messages[currentMessageIndex]}</p>
+      <p className="text-sm text-textSecondary mt-3">Tool generation can take a few minutes. Please wait...</p>
     </div>
   );
 };
