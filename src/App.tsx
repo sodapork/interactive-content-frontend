@@ -43,7 +43,7 @@ function Generator() {
   const [toolIsLive, setToolIsLive] = useState<boolean>(false);
   const [checking, setChecking] = useState<boolean>(false);
   const [publishTime, setPublishTime] = useState<number | null>(null);
-  const [tab, setTab] = useState<'generate' | 'recent'>('generate');
+  const [tab, setTab] = useState<'generate' | 'recent' | 'your-tools'>('generate');
   const [recentTools, setRecentTools] = useState<{ name: string; url: string }[]>([]);
   const [loadingRecent, setLoadingRecent] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
@@ -74,10 +74,28 @@ function Generator() {
       const isAuthenticated = !!(member && member.data);
       console.log('isAuthenticated:', isAuthenticated);
       setIsAuthenticated(isAuthenticated);
+      if (isAuthenticated) {
+        setShowAuthModal(false);
+      }
     } catch {
       setIsAuthenticated(false);
     }
   };
+
+  // Add event listener for Memberstack auth state changes
+  useEffect(() => {
+    const handleAuthStateChange = () => {
+      checkAuth();
+    };
+
+    window.addEventListener('memberstack:auth:success', handleAuthStateChange);
+    window.addEventListener('memberstack:auth:logout', handleAuthStateChange);
+
+    return () => {
+      window.removeEventListener('memberstack:auth:success', handleAuthStateChange);
+      window.removeEventListener('memberstack:auth:logout', handleAuthStateChange);
+    };
+  }, []);
 
   const handleContentSubmit = async (input: string, type: ContentType) => {
     setContent(input);
@@ -256,31 +274,57 @@ function Generator() {
             <span className="font-bold text-xl text-black">Content Sauce</span>
           </div>
           <nav className="flex gap-8 items-center text-text font-semibold">
-            <a className="hover:text-accent transition-colors" href="#">Home</a>
-            <a className="hover:text-accent transition-colors" href="#">Features</a>
-            <a className="hover:text-accent transition-colors" href="#">Pricing</a>
-            <a className="hover:text-accent transition-colors" href="#">Blog</a>
-            <a className="hover:text-accent transition-colors" href="#">Testimonials</a>
+            <button 
+              onClick={() => setTab('generate')}
+              className={`hover:text-accent transition-colors ${tab === 'generate' ? 'text-accent' : ''}`}
+            >
+              Generate
+            </button>
+            <button 
+              onClick={() => setTab('recent')}
+              className={`hover:text-accent transition-colors ${tab === 'recent' ? 'text-accent' : ''}`}
+            >
+              Recent Tools
+            </button>
+            {isAuthenticated && (
+              <button 
+                onClick={() => setTab('your-tools')}
+                className={`hover:text-accent transition-colors ${tab === 'your-tools' ? 'text-accent' : ''}`}
+              >
+                Your Tools
+              </button>
+            )}
           </nav>
           <div className="flex gap-3">
-            <button 
-              onClick={() => {
-                setShowSignup(true);
-                setShowAuthModal(true);
-              }}
-              className="px-5 py-2 rounded-lg font-bold border border-border bg-white text-text hover:bg-accent2 transition-colors"
-            >
-              Sign Up
-            </button>
-            <button 
-              onClick={() => {
-                setShowSignup(false);
-                setShowAuthModal(true);
-              }}
-              className="px-5 py-2 rounded-lg font-bold bg-black text-white hover:bg-accent transition-colors"
-            >
-              Log In
-            </button>
+            {isAuthenticated ? (
+              <button 
+                onClick={handleSignOut}
+                className="px-5 py-2 rounded-lg font-bold bg-black text-white hover:bg-accent transition-colors"
+              >
+                Sign Out
+              </button>
+            ) : (
+              <>
+                <button 
+                  onClick={() => {
+                    setShowSignup(true);
+                    setShowAuthModal(true);
+                  }}
+                  className="px-5 py-2 rounded-lg font-bold border border-border bg-white text-text hover:bg-accent2 transition-colors"
+                >
+                  Sign Up
+                </button>
+                <button 
+                  onClick={() => {
+                    setShowSignup(false);
+                    setShowAuthModal(true);
+                  }}
+                  className="px-5 py-2 rounded-lg font-bold bg-black text-white hover:bg-accent transition-colors"
+                >
+                  Log In
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -490,6 +534,56 @@ function Generator() {
                       ))}
                   </div>
                 </>
+              )}
+            </div>
+          )}
+          {tab === 'your-tools' && isAuthenticated && (
+            <div>
+              <h2 className="text-2xl font-semibold mb-4 text-accent">Your Tools</h2>
+              <div className="mb-6 flex justify-center">
+                <input
+                  type="text"
+                  className="w-full max-w-md px-4 py-2 rounded-lg border border-accent/20 shadow focus:ring-2 focus:ring-accent focus:border-accent text-base transition-all placeholder-textSecondary bg-background text-text"
+                  placeholder="Search your tools..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
+              {loadingRecent ? (
+                <LoadingSpinner />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {recentTools
+                    .filter(tool => formatToolTitle(tool.name).toLowerCase().includes(search.toLowerCase()))
+                    .map(tool => (
+                      <div key={tool.url} className="bg-surface shadow-lg rounded-xl p-4 flex flex-col items-center border border-accent/20">
+                        <div className="mb-2 w-full text-center">
+                          <h3 className="text-lg font-bold text-accent">{formatToolTitle(tool.name)}</h3>
+                        </div>
+                        <iframe
+                          src={tool.url}
+                          width="100%"
+                          height="300"
+                          style={{ border: 'none', overflow: 'auto' }}
+                          title={tool.name}
+                        />
+                        <button
+                          className="mt-2 px-3 py-1.5 border border-accent text-xs font-medium rounded-md shadow-sm text-accent bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+                          onClick={() => handleCopyEmbed(tool.url)}
+                        >
+                          Copy Embed
+                        </button>
+                        <a
+                          href={tool.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-2 text-accent underline text-xs"
+                        >
+                          Open in new tab
+                        </a>
+                      </div>
+                    ))}
+                </div>
               )}
             </div>
           )}
