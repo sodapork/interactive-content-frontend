@@ -239,7 +239,7 @@ function Generator() {
       <header className="bg-white shadow rounded-2xl mx-4 mt-4 mb-8 border border-border">
         <div className="max-w-7xl mx-auto py-4 px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="font-bold text-xl text-black">Saleskan</span>
+            <span className="font-bold text-xl text-black">Content Sauce</span>
           </div>
           <nav className="flex gap-8 items-center text-text font-semibold">
             <a className="hover:text-accent transition-colors" href="#">Home</a>
@@ -255,14 +255,17 @@ function Generator() {
         </div>
       </header>
       <section className="bg-background py-20 text-center">
-        <h1 className="text-5xl font-extrabold mb-4 text-black">Elevate Sales With<br />Seamless Management</h1>
-        <p className="text-lg text-textSecondary mb-8">Empower Your Team, Streamline Your Processes, And Boost Revenue With Our Sales Management Platform</p>
+        <h1 className="text-5xl font-extrabold mb-4 text-black">Give Your Content the Sauce</h1>
+        <p className="text-lg text-textSecondary mb-8">Generate embeddable, interactive tools that keep your readers engaged and boost time on page.</p>
         <div className="flex justify-center gap-4">
           <button className="px-7 py-3 rounded-lg font-bold bg-accent text-white hover:bg-black transition-colors shadow">Get Started</button>
           <button className="px-7 py-3 rounded-lg font-bold border border-border bg-white text-text hover:bg-accent2 transition-colors flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-5.197-3.027A1 1 0 008 9.027v5.946a1 1 0 001.555.832l5.197-3.027a1 1 0 000-1.664z" /></svg>
-            Play Video
+            See Example
           </button>
+        </div>
+        <div className="mt-10 text-textSecondary text-base max-w-2xl mx-auto">
+          Empower your audience with quizzes, calculators, and widgets—no coding required. Easily embed your tools in any blog post or website.
         </div>
       </section>
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
