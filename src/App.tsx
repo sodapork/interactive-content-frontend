@@ -49,7 +49,7 @@ function Generator() {
   const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
   const [updateMessage, setUpdateMessage] = useState<string>('');
   const [search, setSearch] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const location = useLocation();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
@@ -238,7 +238,7 @@ function Generator() {
             >
               Generate Tool
             </Link>
-            {isAuthenticated && (
+            {isAuthenticated === true && (
               <Link
                 to="/dashboard"
                 className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${location.pathname === '/dashboard' ? 'bg-accent text-white shadow' : 'bg-background text-textSecondary border border-accent/30'}`}
@@ -246,7 +246,7 @@ function Generator() {
                 My Tools
               </Link>
             )}
-            {!isAuthenticated && (
+            {isAuthenticated === false && (
               <>
                 <button
                   className="px-4 py-2 rounded-md font-semibold bg-accent text-white shadow hover:bg-accent2 transition-colors duration-200"
