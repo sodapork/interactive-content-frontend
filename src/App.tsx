@@ -251,9 +251,9 @@ function Generator() {
               <>
                 <button
                   className="px-4 py-2 rounded-md font-semibold bg-accent text-white shadow hover:bg-accent2 transition-colors duration-200"
-                  onClick={() => setShowAuthModal(true)}
+                  onClick={() => memberstack.openModal('LOGIN')}
                 >
-                  Login / Signup
+                  Login
                 </button>
                 <button
                   className="px-4 py-2 rounded-md font-semibold bg-accent2 text-white shadow hover:bg-accent transition-colors duration-200"
