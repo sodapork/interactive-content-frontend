@@ -20,13 +20,13 @@ const ContentInput: React.FC<ContentInputProps> = ({ onSubmit }) => {
     <form onSubmit={handleSubmit} className="bg-surface shadow-lg rounded-2xl p-8 border border-accent/20">
       <div className="mb-6">
         <label htmlFor="content" className="block text-lg font-semibold text-accent mb-2">
-          Paste your blog content below
+          Paste or describe your blog content below
         </label>
         <textarea
           id="content"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Paste your blog content here..."
+          placeholder="Paste or describe your blog content here..."
           className="w-full h-64 p-4 rounded-xl bg-background text-text border border-accent/20 focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all resize-none"
           required
         />
