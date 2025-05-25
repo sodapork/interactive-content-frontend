@@ -42,11 +42,13 @@ const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
       <Signup
         onSuccess={handleAuthSuccess}
         onSwitchToLogin={() => setShowSignup(false)}
+        onClose={() => setShowSignup(false)}
       />
     ) : (
       <Login
         onSuccess={handleAuthSuccess}
         onSwitchToSignup={() => setShowSignup(true)}
+        onClose={() => setShowSignup(false)}
       />
     );
   }
