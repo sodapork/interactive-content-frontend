@@ -71,7 +71,7 @@ function Generator() {
     try {
       const member = await memberstack.getCurrentMember();
       console.log('Memberstack.getCurrentMember() result:', member);
-      const isAuthenticated = !!member;
+      const isAuthenticated = !!(member && member.data);
       console.log('isAuthenticated:', isAuthenticated);
       setIsAuthenticated(isAuthenticated);
     } catch {
