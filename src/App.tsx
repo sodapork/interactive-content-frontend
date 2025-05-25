@@ -236,97 +236,34 @@ function Generator() {
         type={notification?.type || 'success'}
         onClose={() => setNotification(null)}
       />
-      <header className="bg-surface shadow border-b border-accent/20">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <h1 className="text-3xl font-extrabold text-accent drop-shadow">Interactive Content Generator</h1>
+      <header className="bg-white shadow rounded-2xl mx-4 mt-4 mb-8 border border-border">
+        <div className="max-w-7xl mx-auto py-4 px-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-xl text-black">Saleskan</span>
+          </div>
+          <nav className="flex gap-8 items-center text-text font-semibold">
+            <a className="hover:text-accent transition-colors" href="#">Home</a>
+            <a className="hover:text-accent transition-colors" href="#">Features</a>
+            <a className="hover:text-accent transition-colors" href="#">Pricing</a>
+            <a className="hover:text-accent transition-colors" href="#">Blog</a>
+            <a className="hover:text-accent transition-colors" href="#">Testimonials</a>
+          </nav>
           <div className="flex gap-3">
-            <Link
-              to="/"
-              className={`px-6 py-2.5 rounded-full font-semibold transition-colors duration-200 ${location.pathname === '/' ? 'bg-accent text-white shadow-lg' : 'bg-background text-textSecondary border border-accent/30 hover:bg-surface'}`}
-            >
-              Generate Tool
-            </Link>
-            {isAuthenticated === true && (
-              <Link
-                to="/dashboard"
-                className={`px-6 py-2.5 rounded-full font-semibold transition-colors duration-200 ${location.pathname === '/dashboard' ? 'bg-accent text-white shadow-lg' : 'bg-background text-textSecondary border border-accent/30 hover:bg-surface'}`}
-              >
-                My Tools
-              </Link>
-            )}
-            {isAuthenticated === false && (
-              <>
-                <button
-                  className="px-6 py-2.5 rounded-full font-semibold bg-accent text-white shadow-lg hover:bg-accent2 transition-colors duration-200"
-                  onClick={() => memberstack.openModal('LOGIN')}
-                >
-                  Login
-                </button>
-                <button
-                  className="px-6 py-2.5 rounded-full font-semibold bg-accent2 text-white shadow-lg hover:bg-accent transition-colors duration-200"
-                  onClick={() => memberstack.openModal('SIGNUP')}
-                >
-                  Sign Up
-                </button>
-              </>
-            )}
+            <button className="px-5 py-2 rounded-lg font-bold border border-border bg-white text-text hover:bg-accent2 transition-colors">Sign Up</button>
+            <button className="px-5 py-2 rounded-lg font-bold bg-black text-white hover:bg-accent transition-colors">Log In</button>
           </div>
         </div>
       </header>
-      {/* Auth Modal */}
-      {showAuthModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-surface p-8 rounded-2xl shadow-xl max-w-md w-full border border-accent/20">
-            <h2 className="text-2xl font-bold mb-4 text-accent">Sign in to Publish</h2>
-            <p className="mb-6 text-textSecondary">
-              To publish your tool and get embed code, you'll need to create an account or sign in.
-              You can still generate tools for free without an account.
-            </p>
-            <div className="flex flex-col gap-4">
-              <button
-                onClick={() => {
-                  setShowAuthModal(false);
-                  setShowSignup(false);
-                }}
-                className="w-full bg-accent text-white py-3 px-4 rounded-full hover:bg-accent2 transition-colors font-semibold"
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => {
-                  setShowAuthModal(false);
-                  setShowSignup(true);
-                }}
-                className="w-full bg-background border border-accent text-accent py-3 px-4 rounded-full hover:bg-surface transition-colors font-semibold"
-              >
-                Create Account
-              </button>
-              <button
-                onClick={() => setShowAuthModal(false)}
-                className="w-full text-textSecondary hover:text-text"
-              >
-                Maybe Later
-              </button>
-            </div>
-          </div>
+      <section className="bg-background py-20 text-center">
+        <h1 className="text-5xl font-extrabold mb-4 text-black">Elevate Sales With<br />Seamless Management</h1>
+        <p className="text-lg text-textSecondary mb-8">Empower Your Team, Streamline Your Processes, And Boost Revenue With Our Sales Management Platform</p>
+        <div className="flex justify-center gap-4">
+          <button className="px-7 py-3 rounded-lg font-bold bg-accent text-white hover:bg-black transition-colors shadow">Get Started</button>
+          <button className="px-7 py-3 rounded-lg font-bold border border-border bg-white text-text hover:bg-accent2 transition-colors flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-5.197-3.027A1 1 0 008 9.027v5.946a1 1 0 001.555.832l5.197-3.027a1 1 0 000-1.664z" /></svg>
+            Play Video
+          </button>
         </div>
-      )}
-      {showSignup ? (
-        <Signup 
-          onSuccess={() => { setShowSignup(false); checkAuth(); }}
-          onSwitchToLogin={() => setShowSignup(false)}
-          onClose={() => setShowSignup(false)}
-        />
-      ) : showAuthModal ? (
-        <Login 
-          onSuccess={() => { setShowAuthModal(false); checkAuth(); }}
-          onSwitchToSignup={() => setShowSignup(true)}
-          onClose={() => setShowAuthModal(false)}
-        />
-      ) : null}
-      <section className="bg-gradient-to-br from-accent to-accent2 py-24 text-center text-white shadow-lg border-b border-accent/30">
-        <h1 className="text-5xl font-extrabold mb-6 drop-shadow-lg">Give your content the sauce</h1>
-        <p className="text-2xl font-medium max-w-2xl mx-auto drop-shadow text-white/90">Automatically create interactive tools based on your blog content.</p>
       </section>
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
