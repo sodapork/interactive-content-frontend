@@ -26,8 +26,8 @@ function parseToolCode(tool: string) {
 function getDefaultCleanStyle() {
   return `<style>
     html, body {
-      background: #181824 !important;
-      color: #fff !important;
+      background: #f8fafc !important;
+      color: #111827 !important;
       font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
       margin: 0; padding: 0;
       min-height: 100vh;
@@ -39,22 +39,22 @@ function getDefaultCleanStyle() {
       box-sizing: border-box;
     }
     h1, h2, h3, h4, h5, h6 {
-      color: #fff;
+      color: #111827;
       font-weight: 700;
       margin-top: 2rem;
       margin-bottom: 1rem;
       letter-spacing: 0.01em;
     }
     p, ul, ol, li, label, input, textarea, select, button {
-      color: #fff;
+      color: #111827;
       font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
       font-size: 1rem;
       margin-bottom: 1.2em;
     }
     button, input[type="button"], input[type="submit"] {
-      background: #232336;
-      color: #fff;
-      border: 1.5px solid #fff;
+      background: #e5e7eb;
+      color: #111827;
+      border: 1.5px solid #111827;
       border-radius: 0.5em;
       padding: 0.7em 1.5em;
       font-weight: 600;
@@ -64,16 +64,16 @@ function getDefaultCleanStyle() {
       margin-bottom: 0.5em;
     }
     button:focus, button:active, input:focus, textarea:focus, select:focus {
-      outline: 2px solid #fff;
+      outline: 2px solid #111827;
       outline-offset: 2px;
       background: #fff;
-      color: #181824;
-      border-color: #fff;
+      color: #111827;
+      border-color: #111827;
     }
     input, textarea, select {
-      background: #232336;
-      color: #fff;
-      border: 1.5px solid #fff;
+      background: #fff;
+      color: #111827;
+      border: 1.5px solid #e5e7eb;
       border-radius: 0.5em;
       padding: 0.7em 1em;
       margin-bottom: 1em;
@@ -81,20 +81,20 @@ function getDefaultCleanStyle() {
       font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
     }
     a {
-      color: #fff;
+      color: #14532d;
       text-decoration: underline;
       transition: color 0.2s;
     }
     a:hover {
-      color: #bbb;
+      color: #0e3a1c;
     }
     .container, .main, .content {
       max-width: 700px;
       margin: 0 auto;
       padding: 2.5rem 1.5rem;
-      background: #181824cc;
+      background: #f8fafce6;
       border-radius: 1.5rem;
-      box-shadow: 0 2px 32px 0 #000a;
+      box-shadow: 0 2px 32px 0 #0001;
     }
     table {
       width: 100%;
@@ -102,20 +102,20 @@ function getDefaultCleanStyle() {
       margin-bottom: 1.5em;
     }
     th, td {
-      border: 1px solid #fff2;
+      border: 1px solid #e5e7eb;
       padding: 0.7em 1em;
       text-align: left;
     }
     th {
-      background: #232336;
+      background: #e5e7eb;
       font-weight: 700;
     }
     tr:nth-child(even) {
-      background: #232336;
+      background: #f3f4f6;
     }
     ::selection {
-      background: #fff;
-      color: #181824;
+      background: #14532d;
+      color: #fff;
     }
   </style>`;
 }
