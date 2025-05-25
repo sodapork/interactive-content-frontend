@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
 
   const handleSignOut = async () => {
     try {
-      await memberstack.openModal('LOGIN');
+      await memberstack.logout();
       window.location.reload();
     } catch (err) {
       setError('Failed to sign out.');
