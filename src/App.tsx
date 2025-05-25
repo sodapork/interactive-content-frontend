@@ -229,6 +229,20 @@ function Generator() {
     return name.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   }
 
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+    checkAuth();
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await memberstack.logout();
+      setIsAuthenticated(false);
+    } catch (err) {
+      console.error('Failed to sign out:', err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-text font-sans">
       <Notification
@@ -249,11 +263,44 @@ function Generator() {
             <a className="hover:text-accent transition-colors" href="#">Testimonials</a>
           </nav>
           <div className="flex gap-3">
-            <button className="px-5 py-2 rounded-lg font-bold border border-border bg-white text-text hover:bg-accent2 transition-colors">Sign Up</button>
-            <button className="px-5 py-2 rounded-lg font-bold bg-black text-white hover:bg-accent transition-colors">Log In</button>
+            <button 
+              onClick={() => {
+                setShowSignup(true);
+                setShowAuthModal(true);
+              }}
+              className="px-5 py-2 rounded-lg font-bold border border-border bg-white text-text hover:bg-accent2 transition-colors"
+            >
+              Sign Up
+            </button>
+            <button 
+              onClick={() => {
+                setShowSignup(false);
+                setShowAuthModal(true);
+              }}
+              className="px-5 py-2 rounded-lg font-bold bg-black text-white hover:bg-accent transition-colors"
+            >
+              Log In
+            </button>
           </div>
         </div>
       </header>
+      {showAuthModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          {showSignup ? (
+            <Signup
+              onSuccess={handleAuthSuccess}
+              onSwitchToLogin={() => setShowSignup(false)}
+              onClose={() => setShowAuthModal(false)}
+            />
+          ) : (
+            <Login
+              onSuccess={handleAuthSuccess}
+              onSwitchToSignup={() => setShowSignup(true)}
+              onClose={() => setShowAuthModal(false)}
+            />
+          )}
+        </div>
+      )}
       <section className="bg-background py-20 text-center">
         <h1 className="text-5xl font-extrabold mb-4 text-black">Give Your Content the Sauce</h1>
         <p className="text-lg text-textSecondary mb-8">Generate embeddable, interactive tools that keep your readers engaged and boost time on page.</p>
