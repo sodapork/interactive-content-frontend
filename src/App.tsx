@@ -176,6 +176,13 @@ function Generator() {
 
   const handlePublish = async () => {
     if (!generatedTool) return;
+    
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    
     setPublishing(true);
     setPublishedUrl('');
     setToolIsLive(false);
@@ -268,29 +275,55 @@ function Generator() {
       </header>
       {/* Auth Modal */}
       {showAuthModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-surface rounded-xl shadow-lg p-8 border border-accent/20 max-w-md w-full relative">
-            <button
-              className="absolute top-2 right-2 text-2xl text-accent hover:text-accent2 font-bold"
-              onClick={() => setShowAuthModal(false)}
-              aria-label="Close"
-            >
-              ×
-            </button>
-            {showSignup ? (
-              <Signup
-                onSuccess={() => { setShowAuthModal(false); setShowSignup(false); checkAuth(); }}
-                onSwitchToLogin={() => setShowSignup(false)}
-              />
-            ) : (
-              <Login
-                onSuccess={() => { setShowAuthModal(false); setShowSignup(false); checkAuth(); }}
-                onSwitchToSignup={() => setShowSignup(true)}
-              />
-            )}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
+            <h2 className="text-2xl font-bold mb-4">Sign in to Publish</h2>
+            <p className="mb-6 text-gray-600">
+              To publish your tool and get embed code, you'll need to create an account or sign in.
+              You can still generate tools for free without an account.
+            </p>
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={() => {
+                  setShowAuthModal(false);
+                  setShowSignup(false);
+                }}
+                className="w-full bg-accent text-white py-2 px-4 rounded hover:bg-accent/90 transition-colors"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => {
+                  setShowAuthModal(false);
+                  setShowSignup(true);
+                }}
+                className="w-full bg-white border border-accent text-accent py-2 px-4 rounded hover:bg-accent/10 transition-colors"
+              >
+                Create Account
+              </button>
+              <button
+                onClick={() => setShowAuthModal(false)}
+                className="w-full text-gray-500 hover:text-gray-700"
+              >
+                Maybe Later
+              </button>
+            </div>
           </div>
         </div>
       )}
+      {showSignup ? (
+        <Signup 
+          onSuccess={() => { setShowSignup(false); checkAuth(); }}
+          onSwitchToLogin={() => setShowSignup(false)}
+          onClose={() => setShowSignup(false)}
+        />
+      ) : showAuthModal ? (
+        <Login 
+          onSuccess={() => { setShowAuthModal(false); checkAuth(); }}
+          onSwitchToSignup={() => setShowSignup(true)}
+          onClose={() => setShowAuthModal(false)}
+        />
+      ) : null}
       <section className="bg-gradient-to-br from-accent to-accent2 py-20 text-center text-white shadow-lg border-b border-accent/30">
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-lg">Give your content the sauce</h1>
         <p className="text-2xl font-medium max-w-2xl mx-auto drop-shadow">Automatically create interactive tools based on your blog content.</p>
@@ -359,9 +392,13 @@ function Generator() {
                   {(!publishedUrl) && (
                     <div className="flex flex-col sm:flex-row gap-4 mt-4">
                       <button
-                        className="inline-flex items-center px-4 py-2 border border-accent text-sm font-medium rounded-md shadow-sm text-accent bg-background hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
                         onClick={handlePublish}
                         disabled={publishing}
+                        className={`px-4 py-2 rounded-md font-semibold transition-colors duration-200 ${
+                          isAuthenticated
+                            ? 'bg-accent text-white hover:bg-accent/90'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
                       >
                         {publishing ? 'Publishing...' : 'Publish & Get Embed Code'}
                       </button>

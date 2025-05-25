@@ -4,9 +4,10 @@ import { useMemberstack } from '@memberstack/react';
 interface LoginProps {
   onSuccess: () => void;
   onSwitchToSignup: () => void;
+  onClose: () => void;
 }
 
-const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => {
+const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup, onClose }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const memberstack = useMemberstack();
@@ -44,6 +45,13 @@ const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => {
           Sign up
         </button>
       </p>
+      <button
+        onClick={onClose}
+        className="absolute top-2 right-2 text-2xl text-accent hover:text-accent2 font-bold"
+        aria-label="Close"
+      >
+        ×
+      </button>
     </div>
   );
 };
