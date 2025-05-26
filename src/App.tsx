@@ -207,6 +207,7 @@ function Generator() {
     setPublishTime(Date.now());
     try {
       const token = await getToken();
+      console.log('Token being sent to backend:', token);
       const filename = (selectedIdea ? selectedIdea.replace(/[^a-z0-9]/gi, '-').toLowerCase() : 'tool') + '-' + Date.now() + '.html';
       const url = await publishTool(filename, generatedTool, token);
       setPublishedUrl(url);
