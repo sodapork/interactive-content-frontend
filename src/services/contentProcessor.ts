@@ -30,18 +30,24 @@ export async function updateToolWithFeedback(
   return response.data.tool || '';
 }
 
-export async function publishTool(filename: string, html: string, token: string): Promise<string> {
+export async function publishTool(filename: string, html: string, token: string): Promise<{ url: string; tool: string }> {
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
   const response = await axios.post(
     `${BACKEND_URL}/publish`,
     { filename, html },
     { headers }
   );
-  return response.data.url || '';
+  return { url: response.data.url, tool: response.data.tool };
 }
 
 export async function getRecentTools(token: string): Promise<Array<{ name: string; url: string; createdAt: string }>> {
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
   const response = await axios.get(`${BACKEND_URL}/recent`, { headers });
+  return response.data.tools || [];
+}
+
+export async function getMyTools(token: string) {
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await axios.get(`${BACKEND_URL}/my-tools`, { headers });
   return response.data.tools || [];
 } 

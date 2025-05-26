@@ -6,7 +6,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import Dashboard from './components/dashboard/Dashboard';
 import AuthWrapper from './components/auth/AuthWrapper';
 import { ContentType } from './types';
-import { generateToolIdeas, processContentForIdea, updateToolWithFeedback, publishTool } from './services/contentProcessor';
+import { generateToolIdeas, processContentForIdea, updateToolWithFeedback, publishTool, getMyTools } from './services/contentProcessor';
 import axios from 'axios';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
@@ -55,6 +55,7 @@ function Generator() {
   const [showSignup, setShowSignup] = useState(false);
   const memberstack = useMemberstack();
   const { getToken } = useAuth();
+  const [myTools, setMyTools] = useState<any[]>([]);
 
   useEffect(() => {
     checkAuth();
@@ -194,24 +195,24 @@ function Generator() {
 
   const handlePublish = async () => {
     if (!generatedTool) return;
-    
-    // Check if user is authenticated
     if (!isAuthenticated) {
       setShowAuthModal(true);
       return;
     }
-    
     setPublishing(true);
     setPublishedUrl('');
     setToolIsLive(false);
     setPublishTime(Date.now());
     try {
       const token = await getToken();
-      console.log('Token being sent to backend:', token);
       const filename = (selectedIdea ? selectedIdea.replace(/[^a-z0-9]/gi, '-').toLowerCase() : 'tool') + '-' + Date.now() + '.html';
-      const url = await publishTool(filename, generatedTool, token);
+      const { url, tool } = await publishTool(filename, generatedTool, token);
       setPublishedUrl(url);
+      setGeneratedTool(tool);
       setNotification({ message: 'Tool published! Your embed code is ready.', type: 'success' });
+      // Refresh recent and my tools
+      fetchMyTools();
+      // If you have a fetchRecentTools function, call it here as well
     } catch (err) {
       setNotification({ message: 'Failed to publish tool.', type: 'error' });
       alert('Failed to publish tool.');
@@ -261,6 +262,17 @@ function Generator() {
       console.error('Failed to sign out:', err);
     }
   };
+
+  const fetchMyTools = async () => {
+    if (!isAuthenticated) return;
+    const token = await getToken();
+    const tools = await getMyTools(token);
+    setMyTools(tools);
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) fetchMyTools();
+  }, [isAuthenticated]);
 
   return (
     <div className="min-h-screen bg-background text-text font-sans">
