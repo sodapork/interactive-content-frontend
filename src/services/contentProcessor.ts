@@ -11,14 +11,22 @@ const getAuthHeaders = async () => {
   return {};
 };
 
+interface ToolResponse {
+  tool: string;
+  warnings?: string[];
+}
+
 export async function generateToolIdeas(content: string): Promise<string[]> {
   const response = await axios.post(`${BACKEND_URL}/ideas`, { content });
   return response.data.ideas || [];
 }
 
-export async function processContentForIdea(content: string, idea: string): Promise<string> {
+export async function processContentForIdea(content: string, idea: string): Promise<ToolResponse> {
   const response = await axios.post(`${BACKEND_URL}/generate`, { content, idea });
-  return response.data.tool || '';
+  return {
+    tool: response.data.tool || '',
+    warnings: response.data.warnings
+  };
 }
 
 export async function updateToolWithFeedback(
