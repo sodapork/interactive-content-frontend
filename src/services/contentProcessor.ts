@@ -32,10 +32,19 @@ export async function processContentForIdea(content: string, idea: string): Prom
 export async function updateToolWithFeedback(
   content: string,
   currentTool: string,
-  feedback: string
-): Promise<string> {
-  const response = await axios.post(`${BACKEND_URL}/update`, { content, currentTool, feedback });
-  return response.data.tool || '';
+  feedback: string,
+  conversationHistory: Array<{ role: string; content: string }> = []
+): Promise<{ tool: string; conversationHistory: Array<{ role: string; content: string }> }> {
+  const response = await axios.post(`${BACKEND_URL}/update`, { 
+    content, 
+    currentTool, 
+    feedback,
+    conversationHistory 
+  });
+  return {
+    tool: response.data.tool || '',
+    conversationHistory: response.data.conversationHistory || []
+  };
 }
 
 export async function publishTool(filename: string, html: string, token: string): Promise<{ url: string; tool: string }> {

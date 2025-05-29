@@ -57,6 +57,7 @@ function Generator() {
   const { getToken } = useAuth();
   const [myTools, setMyTools] = useState<any[]>([]);
   const [qualityWarnings, setQualityWarnings] = useState<string[]>([]);
+  const [conversationHistory, setConversationHistory] = useState<Array<{ role: string; content: string }>>([]);
 
   useEffect(() => {
     checkAuth();
@@ -183,8 +184,14 @@ function Generator() {
     setError(null);
     setUpdateMessage('');
     try {
-      const updatedTool = await updateToolWithFeedback(content, generatedTool, feedback);
-      setGeneratedTool(updatedTool);
+      const { tool, conversationHistory: updatedHistory } = await updateToolWithFeedback(
+        content, 
+        generatedTool, 
+        feedback,
+        conversationHistory
+      );
+      setGeneratedTool(tool);
+      setConversationHistory(updatedHistory);
       setFeedback('');
       setUpdateMessage('Tool updated! Your requested changes have been applied.');
     } catch (err: any) {
@@ -438,6 +445,28 @@ function Generator() {
                   {(!publishedUrl || publishedUrl) && (
                     <div className="bg-surface shadow-lg rounded-xl p-6 mt-4 border border-accent/20">
                       <h4 className="text-md font-semibold mb-2 text-accent">Request a Change or Edit</h4>
+                      
+                      {/* Conversation History */}
+                      {conversationHistory.length > 0 && (
+                        <div className="mb-4 space-y-3">
+                          {conversationHistory.map((msg, index) => (
+                            <div 
+                              key={index} 
+                              className={`p-3 rounded-lg ${
+                                msg.role === 'user' 
+                                  ? 'bg-accent/10 ml-4' 
+                                  : 'bg-accent/5 mr-4'
+                              }`}
+                            >
+                              <div className="text-sm font-medium mb-1">
+                                {msg.role === 'user' ? 'You' : 'Assistant'}
+                              </div>
+                              <div className="text-textSecondary">{msg.content}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
                       <textarea
                         className="block w-full rounded-md border border-accent/20 shadow-sm focus:border-accent focus:ring-accent sm:text-sm mb-2 bg-background text-text placeholder-textSecondary"
                         rows={3}
